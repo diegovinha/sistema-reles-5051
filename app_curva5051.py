@@ -121,8 +121,10 @@ st.set_page_config(
 # 1. Inicializa o estado se não existir
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
-if "usuario_logado" not in st.session_state:
-    st.session_state.usuario_logado = ""
+if "usuario_logado" not in st.session_state: st.session_state.usuario_logado = ""
+if "crea_usuario" not in st.session_state: st.session_state.crea_usuario = ""
+if "celular_usuario" not in st.session_state: st.session_state.celular_usuario = ""
+if "empresa_usuario" not in st.session_state: st.session_state.empresa_usuario = ""
 
 # 2. RESTAURAÇÃO VIA URL (Sobrevive ao F5)
 # Se o usuário apertar F5, a URL ainda terá os parâmetros e restaurará a sessão instantaneamente
@@ -191,10 +193,26 @@ def validar_senha(senha):
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
-# SE O F5 FOR APERTADO: Restaura o login caso os parâmetros estejam na URL
-if not st.session_state.autenticado and st.query_params.get("logged_in") == "true":
-    st.session_state.autenticado = True
-    st.session_state.usuario_logado = st.query_params.get("usuario", "Usuário")
+# SE O F5 FOR APERTADO: Restaura o login através do token
+if not st.session_state.autenticado:
+    token_url = st.query_params.get("token", "")
+
+    if token_url:
+        conn = sqlite3.connect("sistema_reles.db")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT nome, crea, tel1, empresa FROM usuarios WHERE token = ?",
+            (token_url,)
+        )
+        usuario_token = cursor.fetchone()
+        conn.close()
+
+        if usuario_token:
+            st.session_state.autenticado = True
+            st.session_state.usuario_logado = usuario_token[0] or ""
+            st.session_state.crea_usuario = usuario_token[1] or ""
+            st.session_state.celular_usuario = usuario_token[2] or ""
+            st.session_state.empresa_usuario = usuario_token[3] or ""
 
 if not st.session_state.autenticado:
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -220,7 +238,7 @@ if not st.session_state.autenticado:
                         conn = sqlite3.connect("sistema_reles.db")
                         cursor = conn.cursor()
                         # CORRIGIDO: Busca a senha e o nome do usuário na mesma consulta
-                        cursor.execute("SELECT senha, nome FROM usuarios WHERE usuario = ?", (usuario_input.strip(),))
+                        cursor.execute("SELECT senha, nome, crea, tel1, empresa FROM usuarios WHERE usuario = ?",(usuario_input.strip(),))
                         resultado = cursor.fetchone()
                         conn.close()
                         
@@ -234,7 +252,11 @@ if not st.session_state.autenticado:
                             conn.commit()
                             conn.close()
                             st.session_state.autenticado = True
+                            st.session_state.autenticado = True
                             st.session_state.usuario_logado = resultado[1] if resultado[1] else usuario_input.strip()
+                            st.session_state.crea_usuario = resultado[2] or ""
+                            st.session_state.celular_usuario = resultado[3] or ""
+                            st.session_state.empresa_usuario = resultado[4] or ""
                                 
                                 # URL limpa: mostra apenas o token criptografado, sem expor o nome ou status
                             st.query_params.clear()
@@ -453,6 +475,12 @@ def obter_dados_atuais():
     "os_ensaio": st.session_state.get("os_ensaio", ""),
     "data_ensaio": st.session_state.get("data_ensaio", ""),
 
+    # Responsável pelo ensaio
+    "usuario_logado": st.session_state.get("usuario_logado", ""),
+    "crea_usuario": st.session_state.get("crea_usuario", ""),
+    "celular_usuario": st.session_state.get("celular_usuario", ""),
+    "empresa_usuario": st.session_state.get("empresa_usuario", ""),
+
     # Parâmetros do ensaio
     "norma_tipo": n_tipo,
     "curva_tipo": c_tipo,
@@ -467,8 +495,6 @@ def obter_dados_atuais():
     "alpha_input_user_ieee": st.session_state.get("alpha_input_user_ieee", 2.0),
     "l_input_user_ieee": st.session_state.get("l_input_user_ieee", 0.1217),
     "nome_arquivo": st.session_state.get("nome_arquivo", ""),
-
-    # Pontos de ensaio
     "pontos_ensaio": pontos_atualizados
 }
 
@@ -490,6 +516,16 @@ if st.query_params.get("acao") == "novo":
     st.session_state.nome_arquivo = ""
     st.session_state.caminho_absoluto = None
     st.session_state.ultimo_salvamento = "Nunca salvo"
+        # Limpa a identificação do ensaio
+    st.session_state.rele = ""
+    st.session_state.fabricante = ""
+    st.session_state.n_serie = ""
+    st.session_state.equipamento = ""
+    st.session_state.solicitante = ""
+    st.session_state.local = ""
+    st.session_state.oa = ""
+    st.session_state.os_ensaio = ""
+    st.session_state.data_ensaio = ""
     st.session_state.pontos_ensaio = [
       {"id": "I1", "iprim": 0.0, "treal": 0.000},
       {"id": "I2", "iprim": 0.0, "treal": 0.000},
@@ -500,6 +536,10 @@ if st.query_params.get("acao") == "novo":
     for idx in range(10):
         if f"iprim_{idx}" in st.session_state: del st.session_state[f"iprim_{idx}"]
         if f"treal_{idx}" in st.session_state: del st.session_state[f"treal_{idx}"]
+        # Remove somente a ação "novo" e preserva a autenticação
+    st.query_params.clear()
+    st.query_params["token"] = token_atual
+    st.rerun()
     
     # Limpa a URL mas RECOLOCA o token para manter o usuário logado
     st.query_params.clear()
@@ -560,6 +600,16 @@ if "abrir_json" in st.query_params:
 if "dados_relatorio" in st.query_params:
     try:
         dados_relatorio = json.loads(st.query_params["dados_relatorio"])
+                # Restaura a identificação do ensaio
+        st.session_state.rele = dados_relatorio.get("rele", "")
+        st.session_state.fabricante = dados_relatorio.get("fabricante", "")
+        st.session_state.n_serie = dados_relatorio.get("n_serie", "")
+        st.session_state.equipamento = dados_relatorio.get("equipamento", "")
+        st.session_state.solicitante = dados_relatorio.get("solicitante", "")
+        st.session_state.local = dados_relatorio.get("local", "")
+        st.session_state.oa = dados_relatorio.get("oa", "")
+        st.session_state.os_ensaio = dados_relatorio.get("os_ensaio", "")
+        st.session_state.data_ensaio = dados_relatorio.get("data_ensaio", "")
         st.session_state.norma_tipo = dados_relatorio.get("norma_tipo", st.session_state.get("norma_tipo", "IEC-60255"))
         st.session_state.partida_51 = dados_relatorio.get("partida_51", st.session_state.get("partida_51", 0.0))
         st.session_state.dial_tms = dados_relatorio.get("dial_tms", st.session_state.get("dial_tms", 0.100))
@@ -573,6 +623,11 @@ if "dados_relatorio" in st.query_params:
         st.session_state.alpha_input_user_ieee = float(dados_relatorio.get("alpha_input_user_ieee", st.session_state.get("alpha_input_user_ieee", 2.0)))
         st.session_state.l_input_user_ieee = float(dados_relatorio.get("l_input_user_ieee", st.session_state.get("l_input_user_ieee", 0.1217)))
         st.session_state.pontos_ensaio = dados_relatorio.get("pontos_ensaio", st.session_state.get("pontos_ensaio", []))
+        # Restaura os dados do responsável pelo ensaio
+        st.session_state.usuario_logado = dados_relatorio.get("usuario_logado", "")
+        st.session_state.crea_usuario = dados_relatorio.get("crea_usuario", "")
+        st.session_state.celular_usuario = dados_relatorio.get("celular_usuario", "")
+        st.session_state.empresa_usuario = dados_relatorio.get("empresa_usuario", "")
 
         norma_carregada = st.session_state.norma_tipo
         curva_carregada = dados_relatorio.get("curva_tipo", "")
@@ -872,7 +927,7 @@ with st.sidebar:
     
     st.markdown(
         """
-        <br><br><br><br><br><br><br><br><br><br><br>
+        <br>
         <div style="
             text-align: center; 
             color: #718096; 
@@ -1016,6 +1071,17 @@ def gerar_pdf_relatorio():
     n_tipo, c_tipo, p_51, tms, tol, t_inst, crit_50, p_50_man, rtc_str, rel_tc = get_parametros_sessao()
     p_50 = p_50_man
 
+        # Identificação do ensaio
+    rele = st.session_state.get("rele", "")
+    fabricante = st.session_state.get("fabricante", "")
+    n_serie = st.session_state.get("n_serie", "")
+    equipamento = st.session_state.get("equipamento", "")
+    solicitante = st.session_state.get("solicitante", "")
+    local = st.session_state.get("local", "")
+    oa = st.session_state.get("oa", "")
+    os_ensaio = st.session_state.get("os_ensaio", "")
+    data_ensaio = st.session_state.get("data_ensaio", "")
+   
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -1037,14 +1103,109 @@ def gerar_pdf_relatorio():
     table_header_style = ParagraphStyle('TableHeader', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=7.5, leading=9, alignment=TA_CENTER, textColor=colors.white)
     table_cell_style = ParagraphStyle('TableCell', parent=styles['Normal'], fontName='Helvetica', fontSize=7.5, leading=9, alignment=TA_CENTER, textColor=colors.HexColor('#2d3748'))
 
-    arq_atual = st.session_state.get('nome_arquivo', '')
-    arq_display = arq_atual if arq_atual else "Novo Arquivo em Edição (Sem Título)"
+    #arq_atual = st.session_state.get('nome_arquivo', '')
+    #arq_display = arq_atual if arq_atual else "Novo Arquivo em Edição (Sem Título)"
 
-    story.append(Paragraph("Relatório Técnico de Ensaio de Coordenação e Seletividade - Relé ANSI (50/51)", title_style))
+    story.append(Paragraph("Relatório Técnico de Ensaio de Coordenação e Seletividade", title_style))
     story.append(Paragraph("Análise de Sobrecorrente Temporizada e Instantânea", subtitle_style))
     story.append(Spacer(1, 4))
-    story.append(Paragraph(f"Data de Emissão: {datetime.now().strftime('%d/%m/%Y às %H:%M:%S')} | Arquivo em Análise: {arq_display}", subtitle_style))
+    story.append(Paragraph(f"Data de Emissão: {datetime.now(ZoneInfo('America/Sao_Paulo')).strftime('%d/%m/%Y às %H:%M:%S')}", subtitle_style))
+    #story.append(Paragraph(f"Data de Emissão: {datetime.now().strftime('%d/%m/%Y às %H:%M:%S')} | Arquivo em Análise: {arq_display}", subtitle_style))
     story.append(Spacer(1, 8))
+
+    # ==========================================
+    # RESPONSÁVEL PELO ENSAIO
+    # ==========================================
+    nome_responsavel = st.session_state.get("usuario_logado", "")
+    crea_responsavel = st.session_state.get("crea_usuario", "")
+    celular_responsavel = st.session_state.get("celular_usuario", "")
+    empresa_responsavel = st.session_state.get("empresa_usuario", "")
+
+    story.append(Spacer(1, 18))
+    story.append(Paragraph("Responsável pelo Ensaio", heading_style))
+
+    responsavel_data = [
+        [
+            Paragraph("Nome:", bold_style),
+            Paragraph(nome_responsavel or "—", normal_style),
+            Paragraph("CREA:", bold_style),
+            Paragraph(crea_responsavel or "—", normal_style),
+        ],
+        [
+            Paragraph("Empresa:", bold_style),
+            Paragraph(empresa_responsavel or "—", normal_style),
+            Paragraph("Celular:", bold_style),
+            Paragraph(celular_responsavel or "—", normal_style),
+        ],
+    ]
+
+    t_responsavel = Table(
+        responsavel_data,
+        colWidths=[55, 245, 55, 185]
+    )
+
+    t_responsavel.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f7fafc')),
+        ('BOX', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e0')),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e2e8f0')),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+    ]))
+
+    story.append(t_responsavel)    
+
+    # ==========================================
+    # IDENTIFICAÇÃO DO ENSAIO
+    # ==========================================
+    story.append(Paragraph("Identificação do Ensaio", heading_style))
+
+    ident_data = [
+        [
+            Paragraph("<b>Modelo do Relé:</b>", normal_style),
+            Paragraph(str(st.session_state.get("rele", "") or "—"), normal_style),
+            Paragraph("<b>Fabricante:</b>", normal_style),
+            Paragraph(str(st.session_state.get("fabricante", "") or "—"), normal_style),
+            Paragraph("<b>Nº de Série:</b>", normal_style),
+            Paragraph(str(st.session_state.get("n_serie", "") or "—"), normal_style),
+        ],
+        [
+            Paragraph("<b>ID Equipamento:</b>", normal_style),
+            Paragraph(str(st.session_state.get("equipamento", "") or "—"), normal_style),
+            Paragraph("<b>Solicitante:</b>", normal_style),
+            Paragraph(str(st.session_state.get("solicitante", "") or "—"), normal_style),
+            Paragraph("<b>Local:</b>", normal_style),
+            Paragraph(str(st.session_state.get("local", "") or "—"), normal_style),
+        ],
+        [
+            Paragraph("<b>O/A:</b>", normal_style),
+            Paragraph(str(st.session_state.get("oa", "") or "—"), normal_style),
+            Paragraph("<b>O/S:</b>", normal_style),
+            Paragraph(str(st.session_state.get("os_ensaio", "") or "—"), normal_style),
+            Paragraph("<b>Data do Ensaio:</b>", normal_style),
+            Paragraph(str(st.session_state.get("data_ensaio", "") or "—"), normal_style),
+        ],
+    ]
+
+    t_ident = Table(
+        ident_data,
+        colWidths=[75, 105, 65, 115, 75, 105]
+    )
+
+    t_ident.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f7fafc')),
+        ('BOX', (0,0), (-1,-1), 0.5, colors.HexColor('#cbd5e0')),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e2e8f0')),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('LEFTPADDING', (0,0), (-1,-1), 5),
+        ('RIGHTPADDING', (0,0), (-1,-1), 5),
+    ]))
+
+    story.append(t_ident)
+    story.append(Spacer(1, 8))
+
     
     story.append(Paragraph("1. Informações e Parâmetros Atuais da Página", heading_style))
     
@@ -1231,27 +1392,13 @@ def gerar_pdf_relatorio():
     <b>Pontos Fora da Curva Característica:</b> {fora_curva}<br/><br/>
     <b>Parecer Técnico:</b> {'O ensaio demonstra conformidade integral na seletividade e coordenação da proteção ANSI 50/51, com todos os pontos dentro dos limites regulamentares admissíveis.' if reprovados == 0 and total_pontos > 0 else 'Foram constatados desvios superiores à tolerância estipulada, sendo recomendada a revisão dos parâmetros de temporização ou aferição do sistema de ensaio.' if total_pontos > 0 else 'Nenhum ponto registrado para avaliação.'}
     """
-    
-    story.append(Paragraph(summary_text, normal_style))
-    
+    story.append(Paragraph(summary_text, normal_style))  
     doc.build(story)
     buffer.seek(0)
     return buffer.getvalue()
 
 # Tratamento da ação disparada pelo menu "Relatórios" na navbar
 if st.query_params.get("acao") == "gerar_relatorio":
-    # Recupera também o nome do arquivo que estava em edição no momento
-    # em que o usuário clicou em "Gerar Relatório PDF".
-    # Isso mantém o nome tanto para arquivos carregados via upload quanto
-    # para arquivos que foram salvos/salvos como.
-    try:
-        dados_relatorio = st.query_params.get("dados_relatorio")
-        if dados_relatorio:
-            dados_link = json.loads(dados_relatorio)
-            if dados_link.get("nome_arquivo"):
-                st.session_state.nome_arquivo = dados_link["nome_arquivo"]
-    except Exception:
-        pass
 
     st.markdown("""
         <div style="background-color: #f8fafc; border: 1px solid #cbd5e0; padding: 25px; border-radius: 8px; margin: 20px 0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
@@ -1290,39 +1437,15 @@ def registrar_salvamento():
         ZoneInfo("America/Sao_Paulo")
     ).strftime("%d/%m/%Y às %H:%M:%S")
 
-col_btn1, col_btn2, col_btn3, col_btn4, col_info = st.columns([1, 2, 1, 1.5, 5.5])
+col_btn1, col_btn2, col_btn3, col_info = st.columns([1.5, 3.5, 1.5, 5.5])
 
 with col_btn1:
     st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
-    #st.link_button("📄 Novo Arquivo", url="?acao=novo", use_container_width=True)
     st.link_button("📄 Novo Arquivo", url=f"?token={token_atual}&acao=novo", use_container_width=True)
 with col_btn2:
     uploaded_file = st.file_uploader("Abrir", type=["json"], label_visibility="collapsed")
 
 with col_btn3:
-    st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
-
-    dados_download = json.dumps(
-        obter_dados_atuais(),
-        ensure_ascii=False,
-        indent=4
-    )
-
-    nome_download = st.session_state.nome_arquivo or "novo_ensaio_5051.json"
-
-    if not nome_download.lower().endswith(".json"):
-        nome_download += ".json"
-
-    st.download_button(
-        "💾 Salvar",
-        data=dados_download,
-        file_name=nome_download,
-        mime="application/json",
-        on_click=registrar_salvamento,
-        use_container_width=True
-    )
-
-with col_btn4:
     st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
 
     st.download_button(
