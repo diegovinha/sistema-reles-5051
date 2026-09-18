@@ -1,4 +1,9 @@
 sistema_reles.db
+*.db-shm
+*.db-wal
 __pycache__/
+*.pyc
 .ipynb_checkpoints/
 .DS_Store
+.env
+.streamlit/secrets.toml
