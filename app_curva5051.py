@@ -8,9 +8,7 @@ import streamlit as st
 import base64
 import os
 import json
-import tkinter as tk
 import re
-from tkinter import filedialog
 from datetime import datetime
 import io
 from urllib.parse import quote
@@ -109,7 +107,7 @@ def get_base64_image(image_path):
 
 # Caminho relativo seguro (funciona no PC e na Nuvem)
 diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-caminho_imagem = os.path.join(diretorio_atual, "logo_superior.png") 
+caminho_imagem = os.path.join(diretorio_atual, "logo_superior.png")
 
 img_base64 = get_base64_image(caminho_imagem)
 
@@ -159,6 +157,15 @@ if "nome_arquivo" not in st.session_state: st.session_state.nome_arquivo = ""
 if "caminho_absoluto" not in st.session_state: st.session_state.caminho_absoluto = None
 if "ultimo_salvamento" not in st.session_state: st.session_state.ultimo_salvamento = "Nunca salvo"
 if "arquivo_carregado_id" not in st.session_state: st.session_state.arquivo_carregado_id = None
+if "rele" not in st.session_state: st.session_state.rele = ""
+if "fabricante" not in st.session_state: st.session_state.fabricante = ""
+if "n_serie" not in st.session_state: st.session_state.n_serie = ""
+if "equipamento" not in st.session_state: st.session_state.equipamento = ""
+if "solicitante" not in st.session_state: st.session_state.solicitante = ""
+if "local" not in st.session_state: st.session_state.local = ""
+if "oa" not in st.session_state: st.session_state.oa = ""
+if "os_ensaio" not in st.session_state: st.session_state.os_ensaio = ""
+if "data_ensaio" not in st.session_state: st.session_state.data_ensaio = ""
 if "pontos_ensaio" not in st.session_state:
   st.session_state.pontos_ensaio = [
       {"id": "I1", "iprim": 0.0, "treal": 0.000},
@@ -435,22 +442,35 @@ def obter_dados_atuais():
         })
 
     return {
-        "norma_tipo": n_tipo,
-        "curva_tipo": c_tipo,
-        "partida_51": st.session_state.get("partida_51", 10.0),
-        "dial_tms": st.session_state.get("dial_tms", 0.18),
-        "tolerancia": st.session_state.get("tolerancia", 5.0),
-        "tempo_instantaneo": st.session_state.get("tempo_instantaneo", 0.075),
-        "rtc_str": r_str,
-        "criterio_50": st.session_state.get("criterio_50", "Manual Direto"),
-        "partida_50_manual": st.session_state.get("partida_50_manual", 75.0),
-        "k_input_user_ieee": st.session_state.get("k_input_user_ieee", 0.0515),
-        "alpha_input_user_ieee": st.session_state.get("alpha_input_user_ieee", 2.0),
-        "l_input_user_ieee": st.session_state.get("l_input_user_ieee", 0.1217),
+    # Identificação do ensaio
+    "rele": st.session_state.get("rele", ""),
+    "fabricante": st.session_state.get("fabricante", ""),
+    "n_serie": st.session_state.get("n_serie", ""),
+    "equipamento": st.session_state.get("equipamento", ""),
+    "solicitante": st.session_state.get("solicitante", ""),
+    "local": st.session_state.get("local", ""),
+    "oa": st.session_state.get("oa", ""),
+    "os_ensaio": st.session_state.get("os_ensaio", ""),
+    "data_ensaio": st.session_state.get("data_ensaio", ""),
 
-        "nome_arquivo": st.session_state.get("nome_arquivo", ""),
-        "pontos_ensaio": pontos_atualizados
-    }
+    # Parâmetros do ensaio
+    "norma_tipo": n_tipo,
+    "curva_tipo": c_tipo,
+    "partida_51": st.session_state.get("partida_51", 10.0),
+    "dial_tms": st.session_state.get("dial_tms", 0.18),
+    "tolerancia": st.session_state.get("tolerancia", 5.0),
+    "tempo_instantaneo": st.session_state.get("tempo_instantaneo", 0.075),
+    "rtc_str": r_str,
+    "criterio_50": st.session_state.get("criterio_50", "Manual Direto"),
+    "partida_50_manual": st.session_state.get("partida_50_manual", 75.0),
+    "k_input_user_ieee": st.session_state.get("k_input_user_ieee", 0.0515),
+    "alpha_input_user_ieee": st.session_state.get("alpha_input_user_ieee", 2.0),
+    "l_input_user_ieee": st.session_state.get("l_input_user_ieee", 0.1217),
+    "nome_arquivo": st.session_state.get("nome_arquivo", ""),
+
+    # Pontos de ensaio
+    "pontos_ensaio": pontos_atualizados
+}
 
 # ==========================================
 # 3. ROTINAS DE INICIALIZAÇÃO (NOVO E ABRIR)
@@ -572,6 +592,31 @@ if "dados_relatorio" in st.query_params:
 # ==========================================
 # 4. RENDERIZAÇÃO DA NAVBAR E CSS
 # ==========================================
+st.markdown("""
+<style>
+
+/* Área principal do sistema */
+[data-testid="stMainBlockContainer"] {
+    background-color: #ffffff;
+    color: #1a202c;
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+/* Textos da área principal */
+[data-testid="stMainBlockContainer"] p,
+[data-testid="stMainBlockContainer"] label,
+[data-testid="stMainBlockContainer"] h1,
+[data-testid="stMainBlockContainer"] h2,
+[data-testid="stMainBlockContainer"] h3,
+[data-testid="stMainBlockContainer"] span {
+    color: #1a202c;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
 st.markdown(
     """
     <style>
@@ -1234,6 +1279,17 @@ if st.query_params.get("acao") == "gerar_relatorio":
 # ==========================================
 # 4. PAINEL DE GESTÃO NATIVO DO STREAMLIT
 # ==========================================
+
+def registrar_salvamento():
+    from zoneinfo import ZoneInfo
+
+    if not st.session_state.nome_arquivo:
+        st.session_state.nome_arquivo = "novo_ensaio_5051.json"
+
+    st.session_state.ultimo_salvamento = datetime.now(
+        ZoneInfo("America/Sao_Paulo")
+    ).strftime("%d/%m/%Y às %H:%M:%S")
+
 col_btn1, col_btn2, col_btn3, col_btn4, col_info = st.columns([1, 2, 1, 1.5, 5.5])
 
 with col_btn1:
@@ -1245,16 +1301,55 @@ with col_btn2:
 
 with col_btn3:
     st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
-    btn_salvar = st.button("💾 Salvar", use_container_width=True)
+
+    dados_download = json.dumps(
+        obter_dados_atuais(),
+        ensure_ascii=False,
+        indent=4
+    )
+
+    nome_download = st.session_state.nome_arquivo or "novo_ensaio_5051.json"
+
+    if not nome_download.lower().endswith(".json"):
+        nome_download += ".json"
+
+    st.download_button(
+        "💾 Salvar",
+        data=dados_download,
+        file_name=nome_download,
+        mime="application/json",
+        on_click=registrar_salvamento,
+        use_container_width=True
+    )
 
 with col_btn4:
     st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
-    btn_salvar_como = st.button("💾 Salvar como...", use_container_width=True)
+
+    st.download_button(
+        "💾 Salvar como...",
+        data=json.dumps(obter_dados_atuais(), ensure_ascii=False, indent=4),
+        file_name=st.session_state.nome_arquivo or "novo_ensaio_5051.json",
+        mime="application/json",
+        on_click=registrar_salvamento,
+        use_container_width=True
+    )
 
 if uploaded_file is not None and st.session_state.get("arquivo_carregado_id") != uploaded_file.file_id:
     st.session_state.arquivo_carregado_id = uploaded_file.file_id
     try:
         data = json.load(uploaded_file)
+        # Identificação do ensaio
+        st.session_state.rele = data.get("rele", "")
+        st.session_state.fabricante = data.get("fabricante", "")
+        st.session_state.n_serie = data.get("n_serie", "")
+        st.session_state.equipamento = data.get("equipamento", "")
+        st.session_state.solicitante = data.get("solicitante", "")
+        st.session_state.local = data.get("local", "")
+        st.session_state.oa = data.get("oa", "")
+        st.session_state.os_ensaio = data.get("os_ensaio", "")
+        st.session_state.data_ensaio = data.get("data_ensaio", "")
+
+        # Parâmetros do ensaio
         st.session_state.norma_tipo = data.get("norma_tipo", "IEC-60255")
         st.session_state.partida_51 = float(data.get("partida_51", 20.0))
         st.session_state.dial_tms = float(data.get("dial_tms", 0.100))
@@ -1297,54 +1392,113 @@ if uploaded_file is not None and st.session_state.get("arquivo_carregado_id") !=
     except Exception as e:
         st.error(f"Ocorreu um erro ao carregar o arquivo: {e}")
 
-if btn_salvar or btn_salvar_como:
-    dados_salvar = obter_dados_atuais()
-    salvar_agora = False
-    
-    if btn_salvar_como or not st.session_state.caminho_absoluto:
-        root = tk.Tk()
-        root.attributes('-topmost', True)
-        root.withdraw()
-        
-        nome_sugerido = st.session_state.nome_arquivo if st.session_state.nome_arquivo else "novo_ensaio_5051.json"
-        
-        file_path = filedialog.asksaveasfilename(
-            title="Salvar arquivo JSON como...",
-            initialfile=nome_sugerido,
-            defaultextension=".json",
-            filetypes=[("Arquivo JSON", "*.json"), ("Todos os Arquivos", "*.*")]
-        )
-        root.destroy()
-        
-        if file_path:
-            st.session_state.caminho_absoluto = file_path
-            st.session_state.nome_arquivo = os.path.basename(file_path)
-            salvar_agora = True
-        else:
-            st.warning("Operação de salvamento cancelada.")
-    else:
-        salvar_agora = True
-        
-    if salvar_agora:
-        try:
-            with open(st.session_state.caminho_absoluto, "w", encoding="utf-8") as f:
-                json.dump(dados_salvar, f, ensure_ascii=False, indent=4)
-            st.session_state.ultimo_salvamento = datetime.now().strftime("%d/%m/%Y às %H:%M:%S")
-            st.toast("✓ Arquivo salvo com sucesso!", icon="✅")
-        except Exception as e:
-            st.error(f"Erro ao salvar: {e}")
-
 with col_info:
     arq_display = st.session_state.nome_arquivo if st.session_state.nome_arquivo else "Novo Arquivo (Sem Título)"
     st.markdown(
         f"""
         <div style="background-color: #f8fafc; padding: 9px 16px; border-radius: 6px; margin-top: 14px; margin-bottom: 25px; font-family: sans-serif; font-size: 13px; color: #334155; border-left: 4px solid #1a365d; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <div>📁 <b>Arquivo em edição:</b> <span style="color: #1e293b; font-weight: 600;">{arq_display}</span></div>
             <div>⏱️ <b>Último salvamento:</b> <span style="color: #059669; font-weight: 600;">{st.session_state.ultimo_salvamento}</span></div>
         </div>
         """,
         unsafe_allow_html=True
     )
+
+
+
+#Identificação do relé de proteção
+
+st.markdown("""
+<div style="
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 5px solid #1a365d;
+    padding: 7px 12px;
+    margin: 12px 0 18px 0;
+">
+    <span style="
+        font-size: 21px;
+        font-weight: 700;
+        color: var(--text-color);
+        letter-spacing: 0.2px;
+    ">
+        ⚡ Identificação do Ensaio
+    </span>
+</div>
+""", unsafe_allow_html=True)
+
+# Linha 1 — Identificação do relé
+col1, col2, col3 = st.columns([1.5, 1.5, 1])
+
+with col1:
+    st.text_input(
+        "Modelo do Relé",
+        key="rele",
+        placeholder="Ex.: URP6000-5/6001-5"
+    )
+
+with col2:
+    st.text_input(
+        "Fabricante",
+        key="fabricante",
+        placeholder="Ex.: Pextron"
+    )
+
+with col3:
+    st.text_input(
+        "Nº de Série",
+        key="n_serie",
+        placeholder="Nº de série"
+    )
+
+# Linha 2 — Identificação da instalação
+col1, col2, col3 = st.columns([1, 1.5, 2])
+
+with col1:
+    st.text_input(
+        "ID do Equipamento",
+        key="equipamento",
+        placeholder="Ex.: Bay 12"
+    )
+
+with col2:
+    st.text_input(
+        "Solicitante",
+        key="solicitante",
+        placeholder="Responsável / solicitante"
+    )
+
+with col3:
+    st.text_input(
+        "Local do Serviço",
+        key="local",
+        placeholder="Ex.: Subestação / Unidade / Painel"
+    )
+
+# Linha 3 — Dados da ordem
+col1, col2, col3 = st.columns([1, 1, 0.6])
+
+with col1:
+    st.text_input(
+        "O/A",
+        key="oa",
+        placeholder="Ordem de Ajuste"
+    )
+
+with col2:
+    st.text_input(
+        "O/S",
+        key="os_ensaio",
+        placeholder="Ordem de Serviço"
+    )
+
+with col3:
+    st.text_input(
+        "Data",
+        key="data_ensaio",
+        placeholder="dd/mm/aaaa"
+    )
+
 
 st.markdown("""
 <style>
@@ -1452,6 +1606,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 # ==========================================
 # 5. PAINEL DE CONFIGURAÇÕES FASE
 # ==========================================
@@ -1474,7 +1629,7 @@ with col_norma:
 
 with col1:
   partida_51 = st.number_input(
-      "PARTIDA 51 - fase (A PRIM.)", min_value=0.0, value=0.0, step=0.5, key="partida_51", placeholder="Digite um valor de corrente (A)"
+      "PARTIDA 51 - fase (A PRIM.)", min_value=0.0, step=0.5, key="partida_51", placeholder="Digite um valor de corrente (A)"
   )
 
 with col2:
@@ -1563,7 +1718,7 @@ with c_inst2:
     partida_50 = icc2f * k_fator
     st.info(f"Partida 50 calculada: **{partida_50:.1f} A**")
   else:
-    partida_50 = st.number_input("PARTIDA 50 MANUAL (A PRIM.)", min_value=0.0, value=0.0, step=5.0, key="partida_50_manual", placeholder="Digite um valor de corrente (A)")
+    partida_50 = st.number_input("PARTIDA 50 MANUAL (A PRIM.)", min_value=0.0, step=5.0, key="partida_50_manual", placeholder="Digite um valor de corrente (A)")
 
 with c_inst3:
   tempo_instantaneo = st.number_input("Tempo de Atuação 50 (s)", min_value=0.0, max_value=1.0, value=0.0, step=0.005, format="%.3f", key="tempo_instantaneo", placeholder="Digite um valor de tempo (s)")
