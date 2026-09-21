@@ -311,8 +311,35 @@ if not st.session_state.autenticado:
         background-color: #67C5F2 !important;
     }
 
+    /* Container das abas */
+    .stTabs [data-baseweb="tab-list"] {
+        border-bottom: 1px solid rgba(203, 213, 224, 0.25) !important;
+    }
+
+    /* Aba ativa */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #67C5F2 !important;
+        border-bottom: 3px solid #67C5F2 !important;
+    }
+
+    /* Remove o vermelho padrão */
+    .stTabs [data-baseweb="tab-list"] button {
+        border-bottom-color: transparent !important;
+    }
+
+    /* Mantém azul somente na selecionada */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        border-bottom-color: #67C5F2 !important;
+    }
+
+    /* Texto das abas */
+    .stTabs [data-baseweb="tab-list"] button p {
+        color: #cbd5e0 !important;
+        font-weight: 600 !important;
+    }
+
     /* Texto da aba ativa */
-    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] p {
         color: #67C5F2 !important;
         font-weight: 700 !important;
     }
