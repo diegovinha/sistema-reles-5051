@@ -299,18 +299,18 @@ if not st.session_state.autenticado:
     }
 
     /* ESTILIZAÇÃO DAS ABAS (TABS) */
-    .stTabs [data-baseweb="tab-list"] button [data-testid="stMarkdownContainer"] p {
-        color: #cbd5e0 !important; /* Cor da aba inativa */
+    .stTabs [data-baseweb="tab-list"] button[role="tab"] div[data-testid="stMarkdownContainer"] p {
+     color: #cbd5e0 !important;
         font-weight: 600 !important;
     }
 
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] [data-testid="stMarkdownContainer"] p {
-        color: #67C5F2 !important; /* Cor da aba ativa em azul */
-        font-weight: bold !important;
+    .stTabs [data-baseweb="tab-list"] button[role="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] p {
+        color: #67C5F2 !important;
+        font-weight: 700 !important;
     }
 
     /* Linha ativa da aba */
-    div[data-baseweb="tab-highlight"] {
+    .stTabs [data-baseweb="tab-highlight"] {
         background-color: #67C5F2 !important;
     }
     </style>
