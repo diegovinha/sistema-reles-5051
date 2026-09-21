@@ -290,43 +290,31 @@ if not st.session_state.autenticado:
         font-weight: 600 !important;
         transition: 0.3s;
     }
-    
-    /* Texto de todas as abas */
-    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"] {
+    /* Texto das abas inativas */
+    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
         color: #cbd5e0 !important;
         font-weight: 600 !important;
     }
 
-    /* Força todos os elementos internos da aba inativa */
-    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"] * {
-        color: #cbd5e0 !important;
-    }
-
     /* Texto da aba ativa */
-    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"][aria-selected="true"],
-    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"][aria-selected="true"] * {
+    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
         color: #67C5F2 !important;
         font-weight: 700 !important;
     }
 
-    /* Barra inferior da aba selecionada */
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #67C5F2 !important;
-    }
-
-    /* Caso o Streamlit use o novo atributo data-testid */
-    .stTabs button[data-testid="stTab"] {
+    /* Caso o texto esteja em span ao invés de p */
+    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] span {
         color: #cbd5e0 !important;
     }
 
-    .stTabs button[data-testid="stTab"][aria-selected="true"] {
+    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] span {
         color: #67C5F2 !important;
     }
 
-    .stTabs button[data-testid="stTab"][aria-selected="true"] * {
-        color: #67C5F2 !important;
+    /* Linha azul da aba selecionada */
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #67C5F2 !important;
     }
-
     </style>
     """, unsafe_allow_html=True)
 
