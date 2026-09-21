@@ -220,23 +220,45 @@ if not st.session_state.autenticado:
 
 if not st.session_state.autenticado:
     # ----------------------------------------------------
+    # CONVERTE A IMAGEM DE FUNDO PARA BASE64
+    # ----------------------------------------------------
+    caminho_bg = os.path.join(diretorio_atual, "background.png")
+    bg_base64 = get_base64_image(caminho_bg)
+
+    # ----------------------------------------------------
     # CSS PARA APLICAR A IMAGEM DE FUNDO E AJUSTAR CORES
     # ----------------------------------------------------
     st.markdown(
-        """
+        f"""
         <style>
-        .stApp {
-            background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("background.png");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
+        .stApp {{
+            background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+            
+            
+        }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
+    st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align: center; color: #1a365d;'>🔒 Acesso Restrito — Sistema de Coordenação ANSI 50/51</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #4a5568; margin-bottom: 30px;'>Faça login ou cadastre-se para acessar o ambiente de ensaios e relatórios técnicos.</p>", unsafe_allow_html=True)
