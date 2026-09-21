@@ -266,16 +266,22 @@ if not st.session_state.autenticado:
         font-weight: 500 !important;
     }
 
-    /* Campos de entrada */
+        /* Campos de entrada */
     div[data-baseweb="input"] {
-        background-color: rgba(255,255,255,0.95);
-        border-radius: 10px;
+        background-color: rgba(255,255,255,0.10) !important;
+        border-radius: 10px !important;
     }
 
     /* Texto digitado */
-    input {
-        color: #1a365d !important;
+    div[data-baseweb="input"] input {
+        color: #ffffff !important;
         font-size: 16px !important;
+    }
+
+    /* Placeholder */
+    div[data-baseweb="input"] input::placeholder {
+        color: #94a3b8 !important;
+    }
     }
 
     /* Botão Entrar */
@@ -314,6 +320,7 @@ if not st.session_state.autenticado:
     /* Linha azul da aba selecionada */
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #67C5F2 !important;
+        height: 3px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -382,7 +389,7 @@ if not st.session_state.autenticado:
                 if chave not in st.session_state:
                     st.session_state[chave] = valor
 
-            st.markdown("### Endereço por CEP")
+            st.markdown("""<h3 style="color:#67C5F2;">Endereço por CEP</h3>""", unsafe_allow_html=True)
             col_cep_input, col_cep_btn = st.columns([2, 1])
             with col_cep_input:
                 st.text_input("CEP da Empresa", key="cad_cep", max_chars=8, placeholder="00000-000")
@@ -431,7 +438,7 @@ if not st.session_state.autenticado:
                     st.text_input("Complemento", key="cad_complemento", placeholder="Ex: Sala 42")
                 
                 st.markdown("---")
-                st.markdown("### Credenciais de Acesso")
+                st.markdown("""<h3 style="color:#67C5F2;">Credenciais de Acesso</h3>""", unsafe_allow_html=True)
                 st.text_input("Nome de Usuário para Login * (Obrigatório)", key="cad_usuario", help="Ex: joao.silva (único no sistema)")
                 st.text_input("Crie uma Senha *", type="password", key="cad_senha", help="Mínimo 8 caracteres, 1 letra maiúscula e 1 caractere especial.")
                 st.text_input("Confirme a Senha *", type="password", key="cad_conf_senha")             
