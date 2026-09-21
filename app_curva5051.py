@@ -257,23 +257,11 @@ if not st.session_state.autenticado:
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <p style='
-        text-align: center;
-        color: #FFFFFF;
-        font-size: 16px;
-        margin-bottom: 35px;
-        font-family: Arial, sans-serif;
-    '>
-    Faça login ou cadastre-se para acessar o ambiente de ensaios e relatórios técnicos.
-    </p>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
     <style>
     /* Labels dos campos */
     .stTextInput label, 
     .stPasswordInput label {
-        color: #FFFFFF !important;
+        color: #dbeafe !important;
         font-size: 15px !important;
         font-weight: 500 !important;
     }
@@ -303,26 +291,27 @@ if not st.session_state.autenticado:
         transition: 0.3s;
     }
 
-    /* Efeito ao passar mouse */
+    /* Efeito ao passar o mouse */
     div.stButton > button:hover,
     .stFormSubmitButton > button:hover {
-    background: linear-gradient(90deg, #0d7fc4, #4bb3e8) !important;
-    color: white !important;
+        background: linear-gradient(90deg, #0d7fc4, #4bb3e8) !important;
+        color: white !important;
     }
 
-    /* Tabs */
-    button[data-baseweb="tab"] {
-    color: #cbd5e0 !important;
-    font-weight: 600 !important;
+    /* ESTILIZAÇÃO DAS ABAS (TABS) */
+    .stTabs [data-baseweb="tab-list"] button [data-testid="stMarkdownContainer"] p {
+        color: #cbd5e0 !important; /* Cor da aba inativa */
+        font-weight: 600 !important;
     }
 
-    button[data-baseweb="tab"][aria-selected="true"] {
-    color: #67C5F2 !important;
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+        color: #67C5F2 !important; /* Cor da aba ativa em azul */
+        font-weight: bold !important;
     }
 
     /* Linha ativa da aba */
     div[data-baseweb="tab-highlight"] {
-    background-color: #67C5F2 !important;
+        background-color: #67C5F2 !important;
     }
     </style>
     """, unsafe_allow_html=True)
