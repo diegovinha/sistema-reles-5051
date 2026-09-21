@@ -229,39 +229,104 @@ if not st.session_state.autenticado:
     # CSS PARA APLICAR A IMAGEM DE FUNDO E AJUSTAR CORES
     # ----------------------------------------------------
     st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            background-attachment: fixed !important;
-            
-            
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
     f"""
     <style>
     .stApp {{
         background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center; color: #1a365d;'>🔒 Acesso Restrito — Sistema de Coordenação ANSI 50/51</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #4a5568; margin-bottom: 30px;'>Faça login ou cadastre-se para acessar o ambiente de ensaios e relatórios técnicos.</p>", unsafe_allow_html=True)
+    st.markdown("""
+    <h2 style='
+        text-align: center;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    '>
+    🔒 Acesso Restrito — 
+    <span style='color:#67C5F2;'>Sistema de Coordenação ANSI 50/51</span>
+    </h2>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <p style='
+        text-align: center;
+        color: #FFFFFF;
+        font-size: 16px;
+        margin-bottom: 35px;
+        font-family: Arial, sans-serif;
+    '>
+    Faça login ou cadastre-se para acessar o ambiente de ensaios e relatórios técnicos.
+    </p>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <style>
+    /* Labels dos campos */
+    .stTextInput label, 
+    .stPasswordInput label {
+        color: #FFFFFF !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+    }
+
+    /* Campos de entrada */
+    div[data-baseweb="input"] {
+        background-color: rgba(255,255,255,0.95);
+        border-radius: 10px;
+    }
+
+    /* Texto digitado */
+    input {
+        color: #1a365d !important;
+        font-size: 16px !important;
+    }
+
+    /* Botão Entrar */
+    div.stButton > button,
+    .stFormSubmitButton > button {
+        background: linear-gradient(90deg, #1597e5, #67C5F2) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
+        height: 45px !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+        transition: 0.3s;
+    }
+
+    /* Efeito ao passar mouse */
+    div.stButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        background: linear-gradient(90deg, #0d7fc4, #4bb3e8) !important;
+        color: white !important;
+    }
+
+    /* Tabs */
+    button[data-baseweb="tab"] {
+        color: #cbd5e0 !important;
+        font-weight: 600 !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #67C5F2 !important;
+    }
+
+    /* Linha ativa da aba */
+    div[data-baseweb="tab-highlight"] {
+        background-color: #67C5F2 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 
     _, col_centro, _ = st.columns([1, 2, 1])
     
