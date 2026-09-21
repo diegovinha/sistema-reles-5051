@@ -290,29 +290,43 @@ if not st.session_state.autenticado:
         font-weight: 600 !important;
         transition: 0.3s;
     }
-
-    /* Efeito ao passar o mouse */
-    div.stButton > button:hover,
-    .stFormSubmitButton > button:hover {
-        background: linear-gradient(90deg, #0d7fc4, #4bb3e8) !important;
-        color: white !important;
-    }
-
-    /* ESTILIZAÇÃO DAS ABAS (TABS) */
-    .stTabs [data-baseweb="tab-list"] button[role="tab"] div[data-testid="stMarkdownContainer"] p {
-     color: #cbd5e0 !important;
+    
+    /* Texto de todas as abas */
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"] {
+        color: #cbd5e0 !important;
         font-weight: 600 !important;
     }
 
-    .stTabs [data-baseweb="tab-list"] button[role="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] p {
+    /* Força todos os elementos internos da aba inativa */
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"] * {
+        color: #cbd5e0 !important;
+    }
+
+    /* Texto da aba ativa */
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"][aria-selected="true"],
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"][aria-selected="true"] * {
         color: #67C5F2 !important;
         font-weight: 700 !important;
     }
 
-    /* Linha ativa da aba */
+    /* Barra inferior da aba selecionada */
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #67C5F2 !important;
     }
+
+    /* Caso o Streamlit use o novo atributo data-testid */
+    .stTabs button[data-testid="stTab"] {
+        color: #cbd5e0 !important;
+    }
+
+    .stTabs button[data-testid="stTab"][aria-selected="true"] {
+        color: #67C5F2 !important;
+    }
+
+    .stTabs button[data-testid="stTab"][aria-selected="true"] * {
+        color: #67C5F2 !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)
 
