@@ -295,6 +295,7 @@ if not st.session_state.autenticado:
         font-weight: 600 !important;
         transition: 0.3s;
     }
+
     /* Texto das abas inativas */
     .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
         color: #cbd5e0 !important;
@@ -316,8 +317,8 @@ if not st.session_state.autenticado:
         color: #67C5F2 !important;
     }
 
-    /* Linha azul da aba selecionada */
-    .stTabs [data-baseweb="tab-highlight"] {
+    /* Linha da aba selecionada - Streamlit 1.64.0 */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"]::after {
         background-color: #67C5F2 !important;
         height: 3px !important;
     }
