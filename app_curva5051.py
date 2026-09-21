@@ -282,7 +282,6 @@ if not st.session_state.autenticado:
     div[data-baseweb="input"] input::placeholder {
         color: #94a3b8 !important;
     }
-    }
 
     /* Botão Entrar */
     div.stButton > button,
@@ -324,7 +323,6 @@ if not st.session_state.autenticado:
     }
     </style>
     """, unsafe_allow_html=True)
-
 
     _, col_centro, _ = st.columns([1, 2, 1])
     
