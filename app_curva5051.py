@@ -214,11 +214,33 @@ if not st.session_state.autenticado:
             st.session_state.celular_usuario = usuario_token[2] or ""
             st.session_state.empresa_usuario = usuario_token[3] or ""
 
+
+
+
+
 if not st.session_state.autenticado:
+    # ----------------------------------------------------
+    # CSS PARA APLICAR A IMAGEM DE FUNDO E AJUSTAR CORES
+    # ----------------------------------------------------
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("background.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align: center; color: #1a365d;'>🔒 Acesso Restrito — Sistema de Coordenação ANSI 50/51</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #4a5568; margin-bottom: 30px;'>Faça login ou cadastre-se para acessar o ambiente de ensaios e relatórios técnicos.</p>", unsafe_allow_html=True)
-    
+
     _, col_centro, _ = st.columns([1, 2, 1])
     
     with col_centro:
@@ -237,7 +259,6 @@ if not st.session_state.autenticado:
                     else:
                         conn = sqlite3.connect("sistema_reles.db")
                         cursor = conn.cursor()
-                        # CORRIGIDO: Busca a senha e o nome do usuário na mesma consulta
                         cursor.execute("SELECT senha, nome, crea, tel1, empresa FROM usuarios WHERE usuario = ?",(usuario_input.strip(),))
                         resultado = cursor.fetchone()
                         conn.close()
@@ -266,6 +287,11 @@ if not st.session_state.autenticado:
                             st.rerun()
                         else:
                             st.error("Usuário não encontrado ou senha incorreta.")
+
+   
+        
+        
+        
 
         with tab_cadastro:
             defaults = {
