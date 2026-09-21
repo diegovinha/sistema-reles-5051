@@ -306,23 +306,23 @@ if not st.session_state.autenticado:
     /* Efeito ao passar mouse */
     div.stButton > button:hover,
     .stFormSubmitButton > button:hover {
-        background: linear-gradient(90deg, #0d7fc4, #4bb3e8) !important;
-        color: white !important;
+    background: linear-gradient(90deg, #0d7fc4, #4bb3e8) !important;
+    color: white !important;
     }
 
     /* Tabs */
     button[data-baseweb="tab"] {
-        color: #cbd5e0 !important;
-        font-weight: 600 !important;
+    color: #cbd5e0 !important;
+    font-weight: 600 !important;
     }
 
     button[data-baseweb="tab"][aria-selected="true"] {
-        color: #67C5F2 !important;
+    color: #67C5F2 !important;
     }
 
     /* Linha ativa da aba */
     div[data-baseweb="tab-highlight"] {
-        background-color: #67C5F2 !important;
+    background-color: #67C5F2 !important;
     }
     </style>
     """, unsafe_allow_html=True)
