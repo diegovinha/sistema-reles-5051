@@ -296,10 +296,19 @@ if not st.session_state.autenticado:
         transition: 0.3s;
     }
 
-    /* Texto das abas inativas */
-    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
-        color: #cbd5e0 !important;
-        font-weight: 600 !important;
+    /* Força o indicador da aba ativa */
+    .stTabs button[role="tab"][aria-selected="true"] {
+        border-bottom-color: #67C5F2 !important;
+    }
+
+    .stTabs button[role="tab"][aria-selected="true"]::after {
+        content: "" !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background-color: #67C5F2 !important;
     }
 
     /* Texto da aba ativa */
