@@ -578,62 +578,31 @@ st.markdown("""
 st.markdown("""
 <style>
 
-/* ================================
-   SELECTBOX PADRÃO DO SISTEMA
-   FUNDO ESCURO + TEXTO BRANCO
-   ================================ */
+/* SEUS CSS EXISTENTES */
 
 
-/* Caixa fechada */
-div[data-baseweb="select"] > div {
-    background-color: rgba(10,25,47,0.90) !important;
-    border: 1px solid rgba(103,197,242,0.8) !important;
-    border-radius: 8px !important;
-}
+/* ==============================
+   NUMBER INPUT ADAPTATIVO
+   ============================== */
 
-
-/* Texto selecionado */
-div[data-baseweb="select"] span {
-    color: #ffffff !important;
-    font-weight: 500 !important;
-}
-
-
-/* Seta */
-div[data-baseweb="select"] svg {
-    fill: #ffffff !important;
-}
-
-
-/* Menu aberto */
-div[data-baseweb="popover"] {
-    background-color: #0a192f !important;
-}
-
-
-ul[role="listbox"] {
-    background-color: #0a192f !important;
-}
-
-
-/* Opções */
-li[role="option"] {
-    background-color: #0a192f !important;
+[data-theme="dark"] div[data-baseweb="input"] input {
     color: #ffffff !important;
 }
 
-
-/* Hover */
-li[role="option"]:hover {
-    background-color: #1a365d !important;
-    color: #ffffff !important;
+[data-theme="light"] div[data-baseweb="input"] input {
+    color: #000000 !important;
 }
 
+@media (prefers-color-scheme: dark) {
+    div[data-baseweb="input"] input {
+        color: #ffffff !important;
+    }
+}
 
-/* Selecionado */
-li[aria-selected="true"] {
-    background-color: #1a365d !important;
-    color: #ffffff !important;
+@media (prefers-color-scheme: light) {
+    div[data-baseweb="input"] input {
+        color: #000000 !important;
+    }
 }
 
 
