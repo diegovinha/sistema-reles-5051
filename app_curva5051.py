@@ -2090,15 +2090,17 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
     )
   with col_r3:
     i_sec = iprim_val / rel_tc_Ativo
-    st.text(f"{i_sec:.2f} A")
-
+    #st.text(f"{i_sec:.2f} A")
+    st.markdown(f"<span>{i_sec:.2f} A</span>", unsafe_allow_html=True)
   with col_r4:
     t_teorico = calcular_teorico_geral(iprim_val, n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, p_50_Ativo, t_inst_Ativo)
     if pd.isna(t_teorico) or t_teorico == 0:
       t_teorico_str = "Infinito"
     else:
       t_teorico_str = f"{t_teorico:.3f} s"
-    st.text(t_teorico_str)
+    #st.text(t_teorico_str)
+    st.markdown(f"<span>{t_teorico_str}</span>", unsafe_allow_html=True)
+
 
   with col_r5:
     treal_val = st.number_input(
