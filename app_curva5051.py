@@ -286,8 +286,7 @@ if not st.session_state.autenticado:
     }
 
     /* Botão Entrar */
-    div.stButton > button,
-    .stFormSubmitButton > button {
+    div.stButton > button {
         background: linear-gradient(90deg, #1597e5, #67C5F2) !important;
         color: white !important;
         border: none !important;
