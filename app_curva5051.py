@@ -2353,30 +2353,14 @@ with col_info:
         unsafe_allow_html=True
     )
          
+
     st.markdown("""
     <style>
-    /* Força textos e linhas da tabela a ficarem visíveis no fundo escuro */
-    .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
-        color: #ffffff !important;
-    }
-    .katex, .stLatex {
-        color: #ffffff !important;
-    }
-
-    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
-    .stTable th, .stTable td {
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    }
-    .stTable table {
-        border-collapse: collapse !important;
-    }
-
-    .stAlert p, .stAlert span {
-        color: #ffffff !important;
+    .white-text, .white-text * {
+        color: white !important;
     }
     </style>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
     if n_tipo_Ativo == "IEC-60255":
         st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
@@ -2394,7 +2378,9 @@ with col_info:
             "α": ["0,02", "1", "2", "1", "0,04"]
         })
         st.table(tabela_coefs)
-    
+        st.markdown('</div>', unsafe_allow_html=True)
+
+
     elif n_tipo_Ativo == "IEEE-ANSI":
         st.latex(r"T_{51} = T_{ms} \cdot \left( \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1} + L \right)")
         st.markdown("""
@@ -2406,73 +2392,11 @@ with col_info:
         - **K, α e L** – constantes da curva IEEE-ANSI
         """)
         st.warning("⚠️ **Limites de Operação IEEE-ANSI:**\n\nA norma estabelece limites onde a curva atua rigorosamente dentro da faixa de sobrecorrente: \n$1,1 \\times I_{ac} < I_{ma} < 20 \\times I_{ac}$")
-    
+
     else:
         st.markdown("<small>Equações para relés digitais portadores de curvas destinadas à proteção de máquinas térmicas (motores, geradores e transformadores):</small>", unsafe_allow_html=True)
         if curva_tipo == "I x T":
             st.latex(r"T_{51} = \frac{60}{\left( \frac{I_{ma}}{I_s} \right)} \times T_{ms}")
-
-    st.markdown("""
-    <style>
-    .white-text, .white-text * {
-        color: white !important;
-    }
-    </style>
-        """, unsafe_allow_html=True)
-
-    if n_tipo_Ativo == "IEC-60255":
-
-        st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
-        st.markdown("Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).") 
-        st.markdown("#### Valores Teóricos da Norma IEC")
-        tabela_coefs = pd.DataFrame({
-            "Tipo de Curva": [
-                "Normalmente inversa",
-                "Muito inversa",
-                "Extremamente inversa",
-                "Inversa longa",
-                "Inversa curta"
-            ],
-            "K": ["0,14", "13,5", "80", "120", "0,05"],
-            "α": ["0,02", "1", "2", "1", "0,04"]
-        })
-        st.table(tabela_coefs)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-
-    elif n_tipo_Ativo == "IEEE-ANSI":
-
-        st.markdown('<div class="white-text">', unsafe_allow_html=True)
-
-        st.latex(r"T\_{51} = T\_{ms} **\c**dot **\l**eft( **\f**rac{K}{**\l**eft(**\f**rac{I\_{ma}}{I\_{ac}}**\r**ight)^**\a**lpha - 1} + L **\r**ight)")
-
-        st.markdown("""
-        \*\*Legenda das Grandezas:\*\*
-
-        - \*\*T\*\* – tempo de atuação da proteção
-
-        - \*\*$I\_{ma}$\*\* – sobrecorrente máxima admitida (corrente medida no primário)
-
-        - \*\*$I\_{ac}$\*\* – corrente de acionamento (partida 51)
-
-        - \*\*$T\_{ms}$\*\* – multiplicador de tempo (dial)
-
-        - \*\*K, α e L\*\* – constantes da curva IEEE-ANSI
-        """)
-
-        st.warning("⚠️ \*\*Limites de Operação IEEE-ANSI:\*\*\n\nA norma estabelece limites onde a curva atua rigorosamente dentro da faixa de sobrecorrente: \n$1,1 \\\times I\_{ac} < I\_{ma} < 20 \\\times I\_{ac}$")
-
-        st.markdown('</div>', unsafe_allow_html=True)
-
-
-    else:
-
-        st.markdown('<div class="white-text">', unsafe_allow_html=True)
-
-        st.markdown("\<small>Equações para relés digitais portadores de curvas destinadas à proteção de máquinas térmicas (motores, geradores e transformadores):\</small>", unsafe_allow_html=True)
-
-        if curva_tipo == "I x T":
-
-            st.latex(r"T\_{51} = **\f**rac{60}{**\l**eft( **\f**rac{I\_{ma}}{I_s} **\r**ight)} **\t**imes T\_{ms}")
-
+        else:
+            st.latex(r"T_{51} = \frac{540}{\left( \frac{I_{ma}}{I_s} \right)^2} \times T_{ms}")
         st.markdown('</div>', unsafe_allow_html=True)
