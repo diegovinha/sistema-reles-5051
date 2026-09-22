@@ -228,7 +228,7 @@ if not st.session_state.autenticado:
     f"""
     <style>
     .stApp {{
-        background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
+        linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
