@@ -2176,8 +2176,7 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
     else:
       t_teorico_str = f"{t_teorico:.3f} s"
     #st.text(t_teorico_str)
-    st.markdown(
-    f'<span style="color:#ffffff !important; font-size:18px; font-weight:700;">{t_teorico_str}</span>',unsafe_allow_html=True)
+    st.markdown(f'<span style="color:#ffffff !important; font-size:18px; font-weight:700;">{t_teorico_str}</span>', unsafe_allow_html=True)
 
 
   with col_r5:
