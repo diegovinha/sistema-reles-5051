@@ -539,6 +539,41 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+
+.secao-rele {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #008000;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+}
+
+.icone-rele {
+    font-size: 20px;
+}
+
+.titulo-rele {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff !important;
+}
+
+.tag-rele {
+    background-color: #008000;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: auto;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # ==========================================
 # 2. CAPTURA DOS DADOS DA INTERFACE PARA SALVAMENTO E RELATÓRIO
 # ==========================================
@@ -1629,10 +1664,10 @@ with col_info:
 #Identificação do relé de proteção
 
 st.markdown("""
-    <div class="secao-protecao_fase">
+    <div class="secao-rele">
         <span class="icone">⚙</span>
         <span class="titulo">Identificação do Relé de Proteção</span>
-        <span class="tag">Curva de Fase</span>
+        <span class="tag">ID Relé</span>
     </div>
     """, unsafe_allow_html=True)
 
