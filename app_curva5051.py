@@ -525,7 +525,7 @@ st.markdown("""
 .titulo {
     font-size: 20px;
     font-weight: 700;
-    color: #ffffff !important;
+    color:var(--text-color);
 }
 
 .tag {
@@ -560,7 +560,7 @@ st.markdown("""
 .secao-rele .titulo {
     font-size: 20px;
     font-weight: 700;
-    color: #ffffff !important;
+    color:var(--text-color);
 }
 
 .secao-rele .tag {
