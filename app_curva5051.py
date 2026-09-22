@@ -321,8 +321,8 @@ if not st.session_state.autenticado:
 .stTabs [data-baseweb="tab-highlight"] {
     background-color: #67C5F2 !important;
 }
-    </style>
-    """, unsafe_allow_html=True)
+</style>
+""", unsafe_allow_html=True)
 
     _, col_centro, _ = st.columns([1, 2, 1])
     
