@@ -1642,7 +1642,7 @@ st.markdown("""
     <span style="
         font-size: 21px;
         font-weight: 700;
-        color: var(--text-color);
+        color: white !important;
         letter-spacing: 0.2px;
     ">
         ⚡ Identificação do Ensaio
