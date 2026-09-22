@@ -255,6 +255,7 @@ if not st.session_state.autenticado:
 
     st.markdown("""
     <style>
+    
     /* Labels dos campos */
     .stTextInput label, 
     .stPasswordInput label {
@@ -263,7 +264,7 @@ if not st.session_state.autenticado:
         font-weight: 500 !important;
     }
 
-        /* Campos de entrada */
+    /* Campos de entrada */
     div[data-baseweb="input"] {
         background-color: rgba(255,255,255,0.10) !important;
         border-radius: 10px !important;
@@ -271,24 +272,12 @@ if not st.session_state.autenticado:
 
     /* Texto digitado */
     div[data-baseweb="input"] input {
+        color: var(--text-color) !important;
+        -webkit-text-fill-color: var(--text-color) !important;
         font-size: 16px !important;
-    }
 
-        /* Dark mode */
-    @media (prefers-color-scheme: dark) {
-        div[data-baseweb="input"] input {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-        }
-    }
-
-
-    /* Light mode */
-    @media (prefers-color-scheme: light) {
-        div[data-baseweb="input"] input {
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-        }
+    div[data-baseweb="select"] span {
+        color: var(--text-color) !important;
     }
 
     /* Placeholder */
@@ -606,36 +595,18 @@ st.markdown("""
     color: #ffffff !important; 
 }
 
-
-/* ==============================
-   NUMBER INPUT / TEXT INPUT
-   ============================== */
-
-
-/* Fundo do campo */
-div[data-baseweb="input"] { 
-    background-color: rgba(255,255,255,0.10) !important; 
+/* Fundo dos campos */
+div[data-baseweb="input"] {
+    background-color: rgba(255,255,255,0.10) !important;
+    border-radius: 10px !important;
 }
-
 
 /* Texto digitado */
-div[data-baseweb="input"] input { 
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
+div[data-baseweb="input"] input {
+    color: var(--text-color) !important;
+    -webkit-text-fill-color: var(--text-color) !important;
+    font-size:16px !important;
 }
-
-
-/* Caso esteja em Light Mode */
-@media (prefers-color-scheme: light) {
-
-    div[data-baseweb="input"] input { 
-        color: #000000 !important;
-        -webkit-text-fill-color: #000000 !important;
-    }
-
-}
-
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -1753,16 +1724,7 @@ st.markdown("""
     div[data-baseweb="input"] input {
         font-size: 16px !important;
     }
-    /* Dark */
-    [data-theme="dark"] div[data-baseweb="input"] input {
-        color: #ffffff !important;
-    }
-
-
-    /* Light */
-    [data-theme="light"] div[data-baseweb="input"] input {
-        color: #000000 !important;
-    }
+   
     </style>
     """, unsafe_allow_html=True)
 
@@ -1973,13 +1935,19 @@ st.markdown("""
 div[data-baseweb="input"], div[data-baseweb="select"] {
     background-color: rgba(255,255,255,0.10) !important;
     border-radius: 10px !important;
-}
 
-/* Texto digitado ou selecionado em branco */
-input, div[data-baseweb="select"] span {
-    color: #ffffff !important;
+/* Texto selecionado do selectbox */
+div[data-baseweb="select"] span {
+    color: var(--text-color) !important;
     font-size: 16px !important;
 }
+
+
+/* Texto das opções abertas */
+ul[role="listbox"] li {
+    color: var(--text-color) !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
