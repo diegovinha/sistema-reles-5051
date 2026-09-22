@@ -2155,7 +2155,7 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
 
   with col_r1:
     #st.text(p["id"])
-    st.markdown(f'<span style="color:#ffffff !important;">{p['id']}</span>', unsafe_allow_html=True)
+    st.markdown(f"<span style='color:#ffffff !important;'>{p['id']}</span>", unsafe_allow_html=True)
   with col_r2:
     iprim_val = st.number_input(
         f"Primária {idx}",
