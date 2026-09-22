@@ -393,7 +393,27 @@ if not st.session_state.autenticado:
             with col_cep_input:
                 st.text_input("CEP da Empresa", key="cad_cep", max_chars=8, placeholder="00000-000")
             with col_cep_btn:
-                st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+                #st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+                st.markdown(
+                """
+                <style>
+                /* Altera a cor de fundo e do texto de todos os botões */
+                div.stButton > button {
+                    background-color:  linear-gradient(90deg, #1597e5, #67C5F2) !important;
+                    color: white;             /* Cor do texto */
+                    border-radius: 8px;       /* Deixa as bordas arredondadas */
+                    border: none;             /* Remove a borda padrão */
+                }
+                
+                /* Efeito ao passar o mouse por cima do botão (Hover) */
+                div.stButton > button:hover {
+                    background-color: #93d5f5; /* Cor de fundo ao passar o mouse */
+                    color: white;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
                 buscar_cep = st.button("Buscar CEP", key="btn_buscar_cep", use_container_width=True)
 
             if buscar_cep:
