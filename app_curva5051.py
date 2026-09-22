@@ -541,7 +541,6 @@ st.markdown("""
 
 st.markdown("""
 <style>
-
 .secao-rele {
     display: flex;
     align-items: center;
@@ -551,17 +550,18 @@ st.markdown("""
     margin-bottom: 18px;
 }
 
-.icone {
+/* Escopo isolado para esta secção específica */
+.secao-rele .icone {
     font-size: 20px;
 }
 
-.titulo {
+.secao-rele .titulo {
     font-size: 20px;
     font-weight: 700;
     color: #ffffff !important;
 }
 
-.tag {
+.secao-rele .tag {
     background-color: #008000;
     color: white;
     padding: 4px 10px;
@@ -570,7 +570,6 @@ st.markdown("""
     font-weight: 700;
     margin-left: auto;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
