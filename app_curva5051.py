@@ -523,7 +523,7 @@ st.markdown("""
 .titulo {
     font-size: 20px;
     font-weight: 700;
-    color: #263238;
+    color: #ffffff !important;
 }
 
 .tag {
@@ -1626,33 +1626,18 @@ with col_info:
         unsafe_allow_html=True
     )
 
-
-
 #Identificação do relé de proteção
 
 st.markdown("""
-<div style="
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-left: 5px solid #1a365d;
-    padding: 7px 12px;
-    margin: 12px 0 18px 0;
-">
-    <span style="
-        font-size: 21px;
-        font-weight: 700;
-        color: white !important;
-        letter-spacing: 0.2px;
-    ">
-        ⚡ Identificação do Ensaio
-    </span>
-</div>
-""", unsafe_allow_html=True)
+    <div class="secao-protecao_fase">
+        <span class="icone">⚙</span>
+        <span class="titulo">Identificação do Relé de Proteção</span>
+        <span class="tag">Curva de Fase</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("""
     <style>
-    /* Força todos os rótulos de campos de texto a ficarem com branco puro */
     .stTextInput label, .stPasswordInput label {
         color: #ffffff !important;
         font-size: 15px !important;
@@ -1857,11 +1842,37 @@ st.markdown(
 # ==========================================
 st.markdown("""
     <div class="secao-protecao_fase">
-        <span class="icone, style="color #FFFFFF;"⚙</span>
-        <span class="titulo, style="color #FFFFFF;">Configuração da Proteção 51</span>
+        <span class="icone">⚙</span>
+        <span class="titulo">Configuração da Proteção 51</span>
         <span class="tag">Curva de Fase</span>
     </div>
     """, unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+/* Força os rótulos de TODOS os tipos de inputs a ficarem com branco puro */
+.stTextInput label, 
+.stPasswordInput label, 
+.stSelectbox label, 
+.stNumberInput label {
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+}
+
+/* Fundo translúcido para os inputs de texto e números */
+div[data-baseweb="input"], div[data-baseweb="select"] {
+    background-color: rgba(255,255,255,0.10) !important;
+    border-radius: 10px !important;
+}
+
+/* Texto digitado ou selecionado em branco */
+input, div[data-baseweb="select"] span {
+    color: #ffffff !important;
+    font-size: 16px !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 col_norma, col1, col2, col3, col4, col5 = st.columns(6)
 
