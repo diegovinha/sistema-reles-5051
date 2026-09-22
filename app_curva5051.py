@@ -297,29 +297,31 @@ if not st.session_state.autenticado:
         font-weight: 600 !important;
         transition: 0.3s;
     }
-    
-    /* ================================
-    TABS LOGIN - TEXTO SEMPRE BRANCO
-    ================================ */
+    /* Texto das abas inativas */
+    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
+        color: #cbd5e0 !important;
+        font-weight: 600 !important;
+    }
 
-    .stTabs [role="tablist"] button {
-        color: #ffffff !important;
+    /* Texto da aba ativa */
+    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+        color: #67C5F2 !important;
         font-weight: 700 !important;
     }
 
-    .stTabs [role="tablist"] button * {
-        color: #ffffff !important;
-        fill: #ffffff !important;
+    /* Caso o texto esteja em span ao invés de p */
+    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] span {
+        color: #cbd5e0 !important;
     }
 
-    .stTabs [role="tablist"] button[aria-selected="true"] * {
-        color: #ffffff !important;
-        fill: #ffffff !important;
+    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] span {
+        color: #67C5F2 !important;
     }
 
-    /* linha da aba ativa */
+    /* Linha azul da aba selecionada */
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #67C5F2 !important;
+        height: 3px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -327,9 +329,8 @@ if not st.session_state.autenticado:
     _, col_centro, _ = st.columns([1, 2, 1])
     
     with col_centro:
-        tab_login, tab_cadastro = st.tabs(
-            ["🔑 Entrar no Sistema", "📝 Novo Cadastro"]
-        )
+        tab_login, tab_cadastro = st.tabs(["🔑 Entrar no Sistema", "📝 Novo Cadastro"])
+        
         with tab_login:
             with st.form("form_login"):
                 usuario_input = st.text_input("Nome de Usuário", key="login_usuario")
@@ -634,6 +635,7 @@ div[style*="background-color: rgb(252, 231, 231)"] {
     color:#ffffff !important;
     font-weight:700 !important;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -2153,7 +2155,7 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
 
   with col_r1:
     #st.text(p["id"])
-    st.markdown(f"<span style='color:#ffffff !important;'>{p['id']}</span>", unsafe_allow_html=True)
+    st.markdown(f'<span style="color:#ffffff !important;">{p['id']}</span>', unsafe_allow_html=True)
   with col_r2:
     iprim_val = st.number_input(
         f"Primária {idx}",
