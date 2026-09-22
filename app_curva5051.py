@@ -358,7 +358,6 @@ if not st.session_state.autenticado:
                             conn.commit()
                             conn.close()
                             st.session_state.autenticado = True
-                            st.session_state.autenticado = True
                             st.session_state.usuario_logado = resultado[1] if resultado[1] else usuario_input.strip()
                             st.session_state.crea_usuario = resultado[2] or ""
                             st.session_state.celular_usuario = resultado[3] or ""
@@ -607,6 +606,17 @@ div[data-baseweb="input"] input {
     -webkit-text-fill-color: var(--text-color) !important;
     font-size:16px !important;
 }
+
+/* Texto selecionado nos selectbox */
+div[data-baseweb="select"] span {
+    color: var(--text-color) !important;
+}
+
+div[data-baseweb="select"] > div {
+    background-color: rgba(255,255,255,0.10) !important;
+    border-radius: 10px !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
