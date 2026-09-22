@@ -855,7 +855,7 @@ if "dados_relatorio" in st.query_params:
 # ==========================================
 # 4. RENDERIZAÇÃO DA NAVBAR E CSS
 # ==========================================
-caminho_bg = os.path.join(diretorio_atual, "background.png")
+caminho_bg = os.path.join(diretorio_atual, "background_2.png")
 bg_base64 = get_base64_image(caminho_bg)
 
 st.markdown(
