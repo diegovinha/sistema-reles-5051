@@ -255,93 +255,81 @@ if not st.session_state.autenticado:
 
     st.markdown("""
     <style>
-        /* Labels dos campos */
-        .stTextInput label, 
-        .stPasswordInput label {
-            color: #dbeafe !important;
-            font-size: 15px !important;
-            font-weight: 500 !important;
-        }
+    
+    /* Labels dos campos */
+    .stTextInput label, 
+    .stPasswordInput label {
+        color: #dbeafe !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+    }
 
-        /* Campos de entrada */
-        div[data-baseweb="input"] {
-            background-color: rgba(255,255,255,0.10) !important;
-            border-radius: 10px !important;
-        }
+    /* Campos de entrada */
+    div[data-baseweb="input"] {
+        background-color: rgba(255,255,255,0.10) !important;
+        border-radius: 10px !important;
+    }
 
-        /* Texto digitado */
-        div[data-baseweb="input"] input {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            font-size: 16px !important;
-        }
+    /* Texto digitado */
+    div[data-baseweb="input"] input {
+        color: var(--text-color) !important;
+        -webkit-text-fill-color: var(--text-color) !important;
+        font-size: 16px !important;
+    }
+    div[data-baseweb="select"] span {
+        color: var(--text-color) !important;
+    }
 
-        div[data-baseweb="select"] span {
-            color: #ffffff !important;
-        }
+    /* Placeholder */
+    div[data-baseweb="input"] input::placeholder {
+        color: #94a3b8 !important;
+    }
 
-        /* Placeholder */
-        div[data-baseweb="input"] input::placeholder {
-            color: #94a3b8 !important;
-        }
+        /* 1. CORREÇÃO DAS ABAS (Entrar no Sistema / Novo Cadastro) */
+    .stTabs [data-baseweb="tab"] p, 
+    .stTabs [data-baseweb="tab"] span,
+    .stTabs [data-testid="stMarkdownContainer"] p,
+    .stTabs [data-testid="stMarkdownContainer"] span {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        font-weight: 600 !important;
+        transition: color 0.2s ease;
+    }
 
-        /* 1. ABAS - Estado Normal */
-        .stTabs [data-baseweb="tab"] {
-            color: #ffffff !important;
-            font-weight: 600 !important;
-            transition: color 0.2s ease;
-        }
-        
-        .stTabs [data-baseweb="tab"] p, 
-        .stTabs [data-baseweb="tab"] span,
-        .stTabs [data-baseweb="tab"] div {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-        }
+    /* Aba ativa (destaque em azul claro) */
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p,
+    .stTabs [data-baseweb="tab"][aria-selected="true"] span,
+    .stTabs [data-baseweb="tab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+        color: #67C5F2 !important;
+        -webkit-text-fill-color: #67C5F2 !important;
+        font-weight: 700 !important;
+    }
 
-        /* 2. ABAS - Efeito Hover (Muda para azul claro ao passar o mouse) */
-        .stTabs [data-baseweb="tab"]:hover,
-        .stTabs [data-baseweb="tab"]:hover p,
-        .stTabs [data-baseweb="tab"]:hover span,
-        .stTabs [data-baseweb="tab"]:hover div {
-            color: #67C5F2 !important;
-            -webkit-text-fill-color: #67C5F2 !important;
-        }
+    /* 2. CORREÇÃO DOS BOTÕES (Entrar, Finalizar Cadastro, etc.) */
+    div.stButton > button,
+    .stFormSubmitButton > button,
+    button[data-testid="baseButton-primary"],
+    button[data-testid="baseButton-secondary"] {
+        background: linear-gradient(90deg, #1597e5, #67C5F2) !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        height: 45px !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
 
-        /* 3. ABAS - Aba Ativa (Destaque fixo em azul claro) */
-        .stTabs [data-baseweb="tab"][aria-selected="true"],
-        .stTabs [data-baseweb="tab"][aria-selected="true"] p,
-        .stTabs [data-baseweb="tab"][aria-selected="true"] span,
-        .stTabs [data-baseweb="tab"][aria-selected="true"] div {
-            color: #67C5F2 !important;
-            -webkit-text-fill-color: #67C5F2 !important;
-            font-weight: 700 !important;
-        }
+    /* Efeito hover para os botões */
+    div.stButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        opacity: 0.9 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
 
-        /* 4. BOTÕES */
-        div.stButton > button,
-        .stFormSubmitButton > button,
-        button[data-testid="baseButton-primary"],
-        button[data-testid="baseButton-secondary"] {
-            background: linear-gradient(90deg, #1597e5, #67C5F2) !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            border: none !important;
-            border-radius: 10px !important;
-            height: 45px !important;
-            font-size: 17px !important;
-            font-weight: 600 !important;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: 0.3s;
-        }
-
-        /* Efeito hover para os botões */
-        div.stButton > button:hover,
-        .stFormSubmitButton > button:hover {
-            opacity: 0.9 !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-        }
     </style>
     """, unsafe_allow_html=True)
 
