@@ -1072,11 +1072,11 @@ with st.sidebar:
         ">
             <b style="font-size: 16px;">Contato:</b>
             <br><br>E-mail:
-            <a href="mailto:diegovinha57@gmail.com" style="color: #4a5568; font-size: 11.5px; text-decoration: none;">
+            <a href="mailto:diegovinha57@gmail.com" style="font-size: 11.5px; text-decoration: none;">
                 ✉️ diegovinha57@gmail.com
             </a>
             <br>Linkedin:
-            <a href="https://www.linkedin.com/in/diego-costa-vinha-4942926a/" target="_blank" style="color: #2d3748; font-size: 13px; font-weight: bold; text-decoration: none;">
+            <a href="https://www.linkedin.com/in/diego-costa-vinha-4942926a/" target="_blank" style="font-size: 13px; font-weight: bold; text-decoration: none;">
                 diego_vinha 🔗
             </a>
             <br>
@@ -1096,9 +1096,9 @@ with st.sidebar:
             margin-top: 20px;
         ">
             Desenvolvido por:<br>
-            <b style="color: #2d3748; font-size: 13px;">Diego Costa Vinha</b>
+            <b style="font-size: 13px;">Diego Costa Vinha</b>
             <br>Versão:
-            <b style="color: #2d3748; font-size: 13px;">1.0.0</b>
+            <b style="font-size: 13px;">1.0.0</b>
         </div>
         """,
         unsafe_allow_html=True
