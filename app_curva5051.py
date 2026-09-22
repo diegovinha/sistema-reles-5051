@@ -1650,7 +1650,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-    st.markdown("""
+st.markdown("""
     <style>
     /* Força todos os rótulos de campos de texto a ficarem com branco puro */
     .stTextInput label, .stPasswordInput label {
