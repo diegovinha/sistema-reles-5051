@@ -2336,32 +2336,47 @@ with col_info:
 """, unsafe_allow_html=True)
 
     st.markdown(
-    f"""
-    <div style="
-        background-color: #FDE2E2;
-        color: #8B0000;
-        padding: 14px 16px;
-        border-radius: 8px;
-        margin-top: 8px;
-        margin-bottom: 10px;
-        line-height: 1.3;
-    ">
-        <div><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
-        <div><strong>Curva característica:</strong> {curva_tipo}</div>
-        <div><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        f"""
+        <div style="
+            background-color: #FDE2E2;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-top: 8px;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        ">
+            <div style="color: #8B0000 !important;"><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
+            <div style="color: #8B0000 !important;"><strong>Curva característica:</strong> {curva_tipo}</div>
+            <div style="color: #8B0000 !important;"><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
          
-
     st.markdown("""
     <style>
-    .white-text, .white-text * {
-        color: white !important;
+    /* Força textos e linhas da tabela a ficarem visíveis no fundo escuro */
+    .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
+        color: #ffffff !important;
+    }
+    .katex, .stLatex {
+        color: #ffffff !important;
+    }
+
+    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
+    .stTable th, .stTable td {
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    }
+    .stTable table {
+        border-collapse: collapse !important;
+    }
+
+    .stAlert p, .stAlert span {
+        color: #ffffff !important;
     }
     </style>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     if n_tipo_Ativo == "IEC-60255":
         st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
@@ -2379,9 +2394,7 @@ with col_info:
             "α": ["0,02", "1", "2", "1", "0,04"]
         })
         st.table(tabela_coefs)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-
+    
     elif n_tipo_Ativo == "IEEE-ANSI":
         st.latex(r"T_{51} = T_{ms} \cdot \left( \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1} + L \right)")
         st.markdown("""
@@ -2393,11 +2406,13 @@ with col_info:
         - **K, α e L** – constantes da curva IEEE-ANSI
         """)
         st.warning("⚠️ **Limites de Operação IEEE-ANSI:**\n\nA norma estabelece limites onde a curva atua rigorosamente dentro da faixa de sobrecorrente: \n$1,1 \\times I_{ac} < I_{ma} < 20 \\times I_{ac}$")
-
+    
     else:
-        st.markdown("<large style='color: #ffffff !important;'>Equações para relés digitais portadores de curvas destinadas à proteção de máquinas térmicas (motores, geradores e transformadores):</small>", unsafe_allow_html=True)
+        st.markdown("<small>Equações para relés digitais portadores de curvas destinadas à proteção de máquinas térmicas (motores, geradores e transformadores):</small>", unsafe_allow_html=True)
         if curva_tipo == "I x T":
             st.latex(r"T_{51} = \frac{60}{\left( \frac{I_{ma}}{I_s} \right)} \times T_{ms}")
         else:
             st.latex(r"T_{51} = \frac{540}{\left( \frac{I_{ma}}{I_s} \right)^2} \times T_{ms}")
-        st.markdown('</div>', unsafe_allow_html=True)
+
+
+    
