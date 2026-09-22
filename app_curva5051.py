@@ -298,22 +298,47 @@ if not st.session_state.autenticado:
         transition: 0.3s;
     }
     
-    .stTabs [data-testid="stTab"] p,
-    .stTabs [data-testid="stTab"] span {
-        color:#ffffff !important;
-        font-weight:700 !important;
-    }
+    /* ================================
+   COR DAS ABAS LOGIN/CADASTRO
+================================ */
 
-    .stTabs [data-testid="stTab"][aria-selected="true"] p,
-    .stTabs [data-testid="stTab"][aria-selected="true"] span {
-        color:#ffffff !important;
-    }
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px !important;
+}
 
-    /* Linha azul da aba selecionada */
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #67C5F2 !important;
-        height: 3px !important;
-    }
+.stTabs [data-baseweb="tab"] {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+}
+
+.stTabs [data-baseweb="tab"] div {
+    color: #ffffff !important;
+}
+
+.stTabs [data-baseweb="tab"] p {
+    color: #ffffff !important;
+}
+
+.stTabs [data-baseweb="tab"] span {
+    color: #ffffff !important;
+}
+
+/* aba selecionada */
+.stTabs [aria-selected="true"] {
+    color: #ffffff !important;
+}
+
+.stTabs [aria-selected="true"] div,
+.stTabs [aria-selected="true"] p,
+.stTabs [aria-selected="true"] span {
+    color: #ffffff !important;
+}
+
+/* linha azul */
+.stTabs [data-baseweb="tab-highlight"] {
+    background-color:#67C5F2 !important;
+}
     </style>
     """, unsafe_allow_html=True)
 
@@ -2144,7 +2169,7 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
 
   with col_r1:
     #st.text(p["id"])
-    st.markdown(f'<span style="color:#ffffff !important;">{p['id']}</span>', unsafe_allow_html=True)
+    st.markdown(f"<span style='color:#ffffff !important;'>{p['id']}</span>", unsafe_allow_html=True)
   with col_r2:
     iprim_val = st.number_input(
         f"Primária {idx}",
