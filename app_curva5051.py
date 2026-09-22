@@ -214,10 +214,6 @@ if not st.session_state.autenticado:
             st.session_state.celular_usuario = usuario_token[2] or ""
             st.session_state.empresa_usuario = usuario_token[3] or ""
 
-
-
-
-
 if not st.session_state.autenticado:
     # ----------------------------------------------------
     # CONVERTE A IMAGEM DE FUNDO PARA BASE64
@@ -757,6 +753,28 @@ if "dados_relatorio" in st.query_params:
 # ==========================================
 # 4. RENDERIZAÇÃO DA NAVBAR E CSS
 # ==========================================
+# ----------------------------------------------------
+# CONVERTE A IMAGEM DE FUNDO PARA BASE64
+# ----------------------------------------------------
+caminho_bg = os.path.join(diretorio_atual, "background.png")
+bg_base64 = get_base64_image(caminho_bg)
+
+# ----------------------------------------------------
+# CSS PARA APLICAR A IMAGEM DE FUNDO E AJUSTAR CORES
+# ----------------------------------------------------
+st.markdown(
+f"""
+<style>
+.stApp {{
+    background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}}
+</style>
+""",unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 
