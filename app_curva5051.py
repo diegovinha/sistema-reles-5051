@@ -275,7 +275,7 @@ if not st.session_state.autenticado:
         color: var(--text-color) !important;
         -webkit-text-fill-color: var(--text-color) !important;
         font-size: 16px !important;
-
+    }
     div[data-baseweb="select"] span {
         color: var(--text-color) !important;
     }
