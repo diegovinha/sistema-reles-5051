@@ -2470,7 +2470,7 @@ with col_info:
     if n_tipo_Ativo == "IEC-60255":
         st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
         #st.markdown("Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).") 
-        st.markdown("<span class='titulo-tabela;' !important;'>Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).</span>", unsafe_allow_html=True)
+        st.markdown("<span class='titulo-tabela'>Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).</span>", unsafe_allow_html=True)
         st.markdown('<div style="color:#ffffff; font-size:1.17em; font-weight:600;">Valores Teóricos da Norma IEC</div>', unsafe_allow_html=True)
         tabela_coefs = pd.DataFrame({
             "Tipo de Curva": [
