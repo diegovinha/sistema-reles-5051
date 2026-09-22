@@ -1021,10 +1021,10 @@ st.markdown(
                 <path d="M12 8v4"></path>
                 <path d="M12 16h.01"></path>
             </svg>
-            Sistema de Ensaio de Relés ANSI 50/51
+            Sistema de Ensaio de Relés ANSI 50/51<br>
         </div>
         <div class="navbar-links">
-            <a href="{_relatorio_link_url}" target="_blank">📄 Gerar Relatório PDF</a>
+            <a href="{_relatorio_link_url}" target="_blank">Gerar Relatório PDF</a>
             <a href="#">Normas ⏷</a>
             {html_logo}
         </div>
@@ -1032,6 +1032,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 # ==========================================
 # CARD DE BOAS-VINDAS ESPAÇOSO E ELEGANTE
