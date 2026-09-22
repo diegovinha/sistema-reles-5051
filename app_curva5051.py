@@ -2351,8 +2351,7 @@ with col_info:
         <div><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
     </div>
     """,
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
          
     st.markdown("""
     <style>
