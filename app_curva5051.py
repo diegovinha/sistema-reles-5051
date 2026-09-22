@@ -329,8 +329,9 @@ if not st.session_state.autenticado:
     _, col_centro, _ = st.columns([1, 2, 1])
     
     with col_centro:
+        st.markdown("<div class='tabs-login'>", unsafe_allow_html=True)
         tab_login, tab_cadastro = st.tabs(["🔑 Entrar no Sistema", "📝 Novo Cadastro"])
-        
+        st.markdown("</div>", unsafe_allow_html=True)
         with tab_login:
             with st.form("form_login"):
                 usuario_input = st.text_input("Nome de Usuário", key="login_usuario")
@@ -617,10 +618,6 @@ div[data-baseweb="select"] > div {
     border-radius: 10px !important;
 }
 
-/* ==============================
-   CARDS COM FUNDO CLARO
-   ============================== */
-
 .card,  
 div[style*="background-color: #f8fafc"], 
 div[style*="background-color: #fce7e7"], 
@@ -638,6 +635,15 @@ div[style*="background-color: rgb(252, 231, 231)"] {
 .titulo-tabela {
     color:#ffffff !important;
     font-weight:700 !important;
+}
+
+.tabs-login [data-baseweb="tab"] {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.tabs-login [aria-selected="true"] {
+    color: #ffffff !important;
 }
 
 </style>
@@ -2473,7 +2479,8 @@ with col_info:
 
     if n_tipo_Ativo == "IEC-60255":
         st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
-        st.markdown("Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).") 
+        #st.markdown("Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).") 
+        st.markdown("<span style='color:#ffffff !important;'>Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).</span>", unsafe_allow_html=True)
         st.markdown('<div style="color:#ffffff; font-size:1.17em; font-weight:600;">Valores Teóricos da Norma IEC</div>', unsafe_allow_html=True)
         tabela_coefs = pd.DataFrame({
             "Tipo de Curva": [
