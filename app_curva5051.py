@@ -2347,15 +2347,28 @@ with col_info:
     f"""
     <div style="
         background-color: #FDE2E2;
-        color: #8B0000;
         padding: 14px 16px;
         border-radius: 8px;
         margin-top: 10px;
         margin-bottom: 10px;
+        color: #8B0000 !important;
     ">
-        <strong>Corrente de pickup:</strong> {p_50_Ativo:.1f} A
+        <strong style="color:#8B0000 !important;">
+            Corrente de pickup:
+        </strong> 
+        <span style="color:#8B0000 !important;">
+            {p_50_Ativo:.1f} A
+        </span>
+
         &nbsp; | &nbsp;
-        <strong>Tempo de atuação estimado:</strong> {t_inst_Ativo:.3f} s
+
+        <strong style="color:#8B0000 !important;">
+            Tempo de atuação estimado:
+        </strong>
+
+        <span style="color:#8B0000 !important;">
+            {t_inst_Ativo:.3f} s
+        </span>
     </div>
     """,
     unsafe_allow_html=True
