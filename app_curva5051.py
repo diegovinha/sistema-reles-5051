@@ -329,9 +329,7 @@ if not st.session_state.autenticado:
     _, col_centro, _ = st.columns([1, 2, 1])
     
     with col_centro:
-        st.markdown("<div class='tabs-login'>", unsafe_allow_html=True)
         tab_login, tab_cadastro = st.tabs(["🔑 Entrar no Sistema", "📝 Novo Cadastro"])
-        st.markdown("</div>", unsafe_allow_html=True)
         with tab_login:
             with st.form("form_login"):
                 usuario_input = st.text_input("Nome de Usuário", key="login_usuario")
@@ -637,15 +635,14 @@ div[style*="background-color: rgb(252, 231, 231)"] {
     font-weight:700 !important;
 }
 
-.tabs-login [data-baseweb="tab"] {
+[data-baseweb="tab-list"] button {
     color: #ffffff !important;
-    font-weight: 700 !important;
+    font-weight:700 !important;
 }
 
-.tabs-login [aria-selected="true"] {
-    color: #ffffff !important;
+[data-baseweb="tab-list"] button[aria-selected="true"] {
+    color:#ffffff !important;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
