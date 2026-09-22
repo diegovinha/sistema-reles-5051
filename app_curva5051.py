@@ -575,6 +575,49 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+
+/* Caixa fechada do selectbox */
+div[data-baseweb="select"] > div {
+    background-color: rgba(10,25,47,0.75) !important;
+    border: 1px solid rgba(255,255,255,0.35) !important;
+}
+
+
+/* Texto selecionado */
+div[data-baseweb="select"] span {
+    color: white !important;
+}
+
+
+/* Ícone da seta */
+div[data-baseweb="select"] svg {
+    fill: white !important;
+}
+
+
+/* Menu aberto */
+ul[role="listbox"] {
+    background-color: #ffffff !important;
+}
+
+
+/* Texto das opções */
+li[role="option"] {
+    color: #111827 !important;
+}
+
+
+/* Opção selecionada no menu */
+li[role="option"]:hover {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # ==========================================
 # 2. CAPTURA DOS DADOS DA INTERFACE PARA SALVAMENTO E RELATÓRIO
 # ==========================================
