@@ -2139,14 +2139,13 @@ st.markdown(
 )
 
 h1, h2, h3, h4, h5, h6, h7 = st.columns([1, 2, 2, 2, 2, 2, 1])
-with h1: st.markdown("**n°**")
-with h2: st.markdown("**Corrente Primária (A)**")
-with h3: st.markdown("**Corrente Secundária (A)**")
-with h4: st.markdown("**Tempo Teórico**")
-with h5: st.markdown("**Tempo Real (s)**")
-with h6: st.markdown("**Erro (%)**")
-with h7: st.markdown("**Apagar**")
-
+with h1:st.markdown("<span style='color:#ffffff !important; font-weight:700;'>n°</span>", unsafe_allow_html=True)
+with h2: st.markdown("<span style='color:#ffffff !important; font-weight:700;'>Corrente Primária (A)</span>", unsafe_allow_html=True)
+with h3: st.markdown("<span style='color:#ffffff !important; font-weight:700;'>Corrente Secundária (A)</span>", unsafe_allow_html=True)
+with h4: st.markdown("<span style='color:#ffffff !important; font-weight:700;'>Tempo Teórico</span>", unsafe_allow_html=True)
+with h5: st.markdown("<span style='color:#ffffff !important; font-weight:700;'>Tempo Real (s)</span>", unsafe_allow_html=True)
+with h6: st.markdown("<span style='color:#ffffff !important; font-weight:700;'>Erro (%)</span>", unsafe_allow_html=True)
+with h7: st.markdown("<span style='color:#ffffff !important; font-weight:700;'>Apagar</span>", unsafe_allow_html=True)
 linhas_processadas = []
 indices_para_remover = []
 
