@@ -2078,7 +2078,8 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
   col_r1, col_r2, col_r3, col_r4, col_r5, col_r6, col_r7 = st.columns([1, 2, 2, 2, 2, 2, 1])
 
   with col_r1:
-    st.text(p["id"])
+    #st.text(p["id"])
+    st.markdown(f"<span style='color: var(--text-color);'>{p['id']}</span>", unsafe_allow_html=True)
   with col_r2:
     iprim_val = st.number_input(
         f"Primária {idx}",
