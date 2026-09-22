@@ -2151,12 +2151,6 @@ st.markdown("---")
 # ==========================================
 col_graf, col_info = st.columns([2, 1])
 
-with col_graf:
-  st.markdown(
-    '<div class="secao-titulo" style="color: #FFFFFF;"> 📉 Curva do Coordenograma 50/51</div>',
-    unsafe_allow_html=True
-)
-
   with col_graf:
     st.markdown("""
     <div class="secao-protecao_fase">
