@@ -2338,7 +2338,7 @@ with col_info:
     st.markdown(
         f"""
         <div style="
-            background-color: #FDE2E2;
+            background-color: #8B00002;
             padding: 14px 16px;
             border-radius: 8px;
             margin-top: 8px;
