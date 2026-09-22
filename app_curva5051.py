@@ -285,36 +285,40 @@ if not st.session_state.autenticado:
             color: #94a3b8 !important;
         }
 
-        /* 1. CORREÇÃO DAS ABAS (Estado normal) */
-        .stTabs [data-baseweb="tab"] p, 
-        .stTabs [data-baseweb="tab"] span,
-        .stTabs [data-testid="stMarkdownContainer"] p,
-        .stTabs [data-testid="stMarkdownContainer"] span {
+        /* 1. ABAS - Estado Normal */
+        .stTabs [data-baseweb="tab"] {
             color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
             font-weight: 600 !important;
             transition: color 0.2s ease;
         }
+        
+        .stTabs [data-baseweb="tab"] p, 
+        .stTabs [data-baseweb="tab"] span,
+        .stTabs [data-baseweb="tab"] div {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
 
-        /* Efeito Hover nas abas (muda para azul claro ao passar o rato) */
+        /* 2. ABAS - Efeito Hover (Muda para azul claro ao passar o mouse) */
+        .stTabs [data-baseweb="tab"]:hover,
         .stTabs [data-baseweb="tab"]:hover p,
         .stTabs [data-baseweb="tab"]:hover span,
-        .stTabs [data-baseweb="tab"]:hover [data-testid="stMarkdownContainer"] p,
-        .stTabs [data-baseweb="tab"]:hover [data-testid="stMarkdownContainer"] span {
+        .stTabs [data-baseweb="tab"]:hover div {
             color: #67C5F2 !important;
             -webkit-text-fill-color: #67C5F2 !important;
         }
 
-        /* Aba ativa (destaque fixo em azul claro) */
+        /* 3. ABAS - Aba Ativa (Destaque fixo em azul claro) */
+        .stTabs [data-baseweb="tab"][aria-selected="true"],
         .stTabs [data-baseweb="tab"][aria-selected="true"] p,
         .stTabs [data-baseweb="tab"][aria-selected="true"] span,
-        .stTabs [data-baseweb="tab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+        .stTabs [data-baseweb="tab"][aria-selected="true"] div {
             color: #67C5F2 !important;
             -webkit-text-fill-color: #67C5F2 !important;
             font-weight: 700 !important;
         }
 
-        /* 2. CORREÇÃO DOS BOTÕES (Entrar, Finalizar Cadastro, etc.) */
+        /* 4. BOTÕES */
         div.stButton > button,
         .stFormSubmitButton > button,
         button[data-testid="baseButton-primary"],
