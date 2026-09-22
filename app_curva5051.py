@@ -271,7 +271,7 @@ if not st.session_state.autenticado:
 
     /* Texto digitado */
     div[data-baseweb="input"] input {
-        color: #ffffff !important;
+        color:var(--text-color) !important;
         font-size: 16px !important;
     }
 
@@ -518,7 +518,7 @@ st.markdown("""
 
 .icone {
     font-size: 20px;
-    color: #ffffff !important;
+    color:var(--text-color);
 
 }
 
@@ -1675,7 +1675,7 @@ st.markdown("""
 st.markdown("""
     <style>
     .stTextInput label, .stPasswordInput label {
-        color: #ffffff !important;
+        color:var(--text-color) !important;
         font-size: 15px !important;
         font-weight: 500 !important;
     }
@@ -1687,7 +1687,7 @@ st.markdown("""
     }
 
     div[data-baseweb="input"] input {
-        color: #ffffff !important;
+        color:var(--text-color) !important;
         font-size: 16px !important;
     }
     </style>
@@ -1891,7 +1891,7 @@ st.markdown("""
 .stPasswordInput label, 
 .stSelectbox label, 
 .stNumberInput label {
-    color: #ffffff !important;
+    color:var(--text-color) !important;
     font-size: 15px !important;
     font-weight: 500 !important;
 }
@@ -2172,7 +2172,7 @@ with col_graf:
     .stSelectbox label, 
     .stNumberInput label,
     .stCheckbox label {
-        color: #ffffff !important;
+        color:var(--text-color) !important;
         font-size: 15px !important;
         font-weight: 500 !important;
     }
