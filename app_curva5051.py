@@ -759,22 +759,6 @@ if "dados_relatorio" in st.query_params:
 caminho_bg = os.path.join(diretorio_atual, "background.png")
 bg_base64 = get_base64_image(caminho_bg)
 
-# ----------------------------------------------------
-# CSS PARA APLICAR A IMAGEM DE FUNDO E AJUSTAR CORES
-# ----------------------------------------------------
-st.markdown(
-f"""
-<style>
-.stApp {{
-    background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}}
-</style>
-""",unsafe_allow_html=True)
-
 st.markdown("""
 <style>
 
