@@ -2363,11 +2363,9 @@ with col_info:
         color: #ffffff !important;
     }
 
-    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
     .stTable th, .stTable td {
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    }
+        border: 1px solid rgba(128, 128, 128, 0.25) !important;
+}
     .stTable table {
         border-collapse: collapse !important;
     }
