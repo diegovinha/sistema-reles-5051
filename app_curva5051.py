@@ -255,6 +255,7 @@ if not st.session_state.autenticado:
     <span style='color:#67C5F2;'>Sistema de Coordenação ANSI 50/51</span>
     </h2>
     """, unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #ffffff; margin-bottom: 30px;'>Faça login ou cadastre-se para acessar o ambiente de ensaios e relatórios técnicos.</p>", unsafe_allow_html=True)
 
     st.markdown("""
     <style>
@@ -295,51 +296,14 @@ if not st.session_state.autenticado:
         font-weight: 600 !important;
         transition: 0.3s;
     }
-
-    /* Força o indicador da aba ativa */
-    .stTabs button[role="tab"][aria-selected="true"] {
-        border-bottom-color: #67C5F2 !important;
-    }
-
-    .stTabs button[role="tab"][aria-selected="true"]::after {
-        content: "" !important;
-        position: absolute !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        height: 3px !important;
-        background-color: #67C5F2 !important;
-    }
-
-    /* Container das abas */
-    .stTabs [data-baseweb="tab-list"] {
-        border-bottom: 1px solid rgba(203, 213, 224, 0.25) !important;
-    }
-
-    /* Aba ativa */
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        color: #67C5F2 !important;
-        border-bottom: 3px solid #67C5F2 !important;
-    }
-
-    /* Remove o vermelho padrão */
-    .stTabs [data-baseweb="tab-list"] button {
-        border-bottom-color: transparent !important;
-    }
-
-    /* Mantém azul somente na selecionada */
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        border-bottom-color: #67C5F2 !important;
-    }
-
-    /* Texto das abas */
-    .stTabs [data-baseweb="tab-list"] button p {
+    /* Texto das abas inativas */
+    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
         color: #cbd5e0 !important;
         font-weight: 600 !important;
     }
 
     /* Texto da aba ativa */
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] p {
+    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
         color: #67C5F2 !important;
         font-weight: 700 !important;
     }
@@ -353,8 +317,8 @@ if not st.session_state.autenticado:
         color: #67C5F2 !important;
     }
 
-    /* Linha da aba selecionada - Streamlit 1.64.0 */
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"]::after {
+    /* Linha azul da aba selecionada */
+    .stTabs [data-baseweb="tab-highlight"] {
         background-color: #67C5F2 !important;
         height: 3px !important;
     }
