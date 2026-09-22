@@ -1032,7 +1032,14 @@ if st.session_state.get("autenticado", False):
 
 with st.sidebar:
     st.markdown("### 👤 Painel do Usuário")
-    st.write(f"Logado como:\n**{st.session_state.get('usuario_logado', 'Usuário')}**")
+    #st.write(f"Logado como:\n**{st.session_state.get('usuario_logado', 'Usuário')}**")
+    st.markdown(
+    f"""
+    <div style="color: var(--text-color);">
+        Logado como:<br>
+        <strong>{st.session_state.get('usuario_logado', 'Usuário')}</strong>
+    </div>
+    """,unsafe_allow_html=True)
     st.markdown("---")
     
     # EXPANDE O PERFIL E DADOS CADASTRAIS PARA EDIÇÃO
@@ -2320,7 +2327,7 @@ with col_graf:
   st.plotly_chart(fig, width='stretch')
    
   st.markdown(f"""
-<div style="line-height: 1.3; margin-top: 8px;">
+<div style="line-height: 1.3; margin-top: 8px; color: #ffffff;">
     <div><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
     <div><strong>Curva característica:</strong> {curva_tipo}</div>
     <div><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
@@ -2436,7 +2443,6 @@ with col_info:
     st.markdown("""
     <style>
 
-    .stMarkdown p,
     .stMarkdown li,
     .stMarkdown small {
         color: #ffffff !important;
@@ -2464,7 +2470,7 @@ with col_info:
     if n_tipo_Ativo == "IEC-60255":
         st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
         st.markdown("Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).") 
-        st.markdown("#### Valores Teóricos da Norma IEC")
+        st.markdown('<div style="color:#ffffff; font-size:1.17em; font-weight:600;">Valores Teóricos da Norma IEC</div>', unsafe_allow_html=True)
         tabela_coefs = pd.DataFrame({
             "Tipo de Curva": [
                 "Normalmente inversa",
