@@ -2355,25 +2355,20 @@ with col_info:
          
     st.markdown("""
     <style>
-    /* Força textos e linhas da tabela a ficarem visíveis no fundo escuro */
-    .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
-        color: #ffffff !important;
-    }
+    /* Removemos as regras globais de texto branco para o Light Mode funcionar nativamente */
+
+    /* Mantemos apenas o ajuste das fórmulas LaTeX e tabelas para fundo escuro, 
+    ou usamos classes específicas se necessário */
     .katex, .stLatex {
-        color: #ffffff !important;
+        /* O LaTeX no Streamlit pode adaptar-se ou manter-se legível */
     }
 
-    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
+    /* Bordas das tabelas com transparência sutil que funciona em ambos os temas */
     .stTable th, .stTable td {
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border: 1px solid rgba(128, 128, 128, 0.25) !important;
     }
     .stTable table {
         border-collapse: collapse !important;
-    }
-
-    .stAlert p, .stAlert span {
-        color: #ffffff !important;
     }
     </style>
     """, unsafe_allow_html=True)
