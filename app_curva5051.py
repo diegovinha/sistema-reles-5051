@@ -2345,6 +2345,9 @@ with col_info:
         margin-top: 8px;
         margin-bottom: 10px;
         line-height: 1.3;
+        .quadro-alerta, .quadro-alerta * {
+        color: #8B0000 !important;
+        }
     ">
         <div><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
         <div><strong>Curva característica:</strong> {curva_tipo}</div>
