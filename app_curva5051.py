@@ -2356,16 +2356,23 @@ with col_info:
          
     st.markdown("""
     <style>
-    /* Força textos, LaTeX, tabelas e avisos a ficarem brancos */
+    /* Força textos e linhas da tabela a ficarem visíveis no fundo escuro */
     .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
         color: #ffffff !important;
     }
     .katex, .stLatex {
         color: #ffffff !important;
     }
+
+    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
     .stTable th, .stTable td {
         color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
     }
+    .stTable table {
+        border-collapse: collapse !important;
+    }
+
     .stAlert p, .stAlert span {
         color: #ffffff !important;
     }
