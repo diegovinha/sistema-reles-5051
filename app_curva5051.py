@@ -2356,15 +2356,17 @@ with col_info:
          
     st.markdown("""
     <style>
-    /* Força textos e linhas da tabela a ficarem visíveis no fundo escuro */
-    .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
+    /* 1. Texto geral da página (fundo escuro) continua branco */
+    .stMarkdown p, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
         color: #ffffff !important;
     }
+
+    /* 2. Fórmulas LaTeX em branco */
     .katex, .stLatex {
         color: #ffffff !important;
     }
 
-    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
+    /* 3. Tabelas: texto branco e linhas visíveis */
     .stTable th, .stTable td {
         color: #ffffff !important;
         border: 1px solid rgba(255, 255, 255, 0.25) !important;
@@ -2373,8 +2375,9 @@ with col_info:
         border-collapse: collapse !important;
     }
 
-    .stAlert p, .stAlert span {
-        color: #ffffff !important;
+    /* 4. CORRECÇÃO DOS QUADROS: Garante que o texto dentro de alertas/caixas claras volte a ser escuro */
+    .stAlert p, .stAlert span, .stAlert div {
+        color: #1a365d !important;
     }
     </style>
     """, unsafe_allow_html=True)
