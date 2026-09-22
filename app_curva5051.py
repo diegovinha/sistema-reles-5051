@@ -1070,7 +1070,7 @@ with st.sidebar:
             padding-top: 12px; 
             margin-top: 20px;
         ">
-            <b style="color: #2d3748; font-size: 16px;">Contato:</b>
+            <b style="font-size: 16px;">Contato:</b>
             <br><br>E-mail:
             <a href="mailto:diegovinha57@gmail.com" style="color: #4a5568; font-size: 11.5px; text-decoration: none;">
                 ✉️ diegovinha57@gmail.com
