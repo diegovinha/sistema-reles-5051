@@ -403,6 +403,7 @@ if not st.session_state.autenticado:
                     color: white;             /* Cor do texto */
                     border-radius: 8px;       /* Deixa as bordas arredondadas */
                     border: none;             /* Remove a borda padrão */
+                    margin-top: 28px;
                 }
                 
                 /* Efeito ao passar o mouse por cima do botão (Hover) */
