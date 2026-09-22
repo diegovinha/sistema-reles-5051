@@ -957,6 +957,62 @@ _relatorio_link_url = f"?token={token_atual}&acao=gerar_relatorio&dados_relatori
 )
 
 st.markdown(
+    """
+    <style>
+    .navbar {
+        background: linear-gradient(
+            90deg,
+            rgba(0,0,0,0.98),
+            rgba(35,35,35,0.92),
+            rgba(0,0,0,0.98)
+        );
+
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        border-radius: 0 0 12px 12px;
+
+        width: 100%;
+        color: white;
+
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+
+        box-shadow:
+            0 4px 15px rgba(0,0,0,0.7);
+    }
+
+    .navbar-brand {
+        font-size: 22px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 25px;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: #eeeeee;
+        text-decoration: none;
+    }
+
+    .navbar-links a:hover {
+        color: white;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
     f"""
     <div class="navbar">
         <div class="navbar-brand">
@@ -968,7 +1024,7 @@ st.markdown(
             Sistema de Ensaio de Relés ANSI 50/51
         </div>
         <div class="navbar-links">
-            <a href="{_relatorio_link_url}" target="_blank">Gerar Relatório PDF</a>
+            <a href="{_relatorio_link_url}" target="_blank">📄 Gerar Relatório PDF</a>
             <a href="#">Normas ⏷</a>
             {html_logo}
         </div>
@@ -1018,17 +1074,17 @@ if st.session_state.get("autenticado", False):
                     font-size: 20px;
                 ">👤</div>
                 <div>
-                    <div style="font-weight: bold; color: #1a365d; font-size: 16px; margin-bottom: 2px;">
+                    <div style="font-weight: 700; color: #1a365d; font-size: 16px; margin-bottom: 4px;">
                         👋 Bem-vindo, {nome_usuario}
                     </div>
                     <div style="color: #4a5568; font-size: 13px;">
-                        Seu acesso foi realizado com sucesso.
+                        Sessão validada com sucesso. Ambiente de ensaio disponível.
                     </div>
                 </div>
             </div>
             <div style="color: #4a5568; font-size: 13px; text-align: right; font-family: monospace; line-height: 1.5;">
-                📅 Data do Acesso: {data_atual}<br>
-                🕐 Horário do Acesso: {hora_atual}
+                📅 Acesso: {data_atual}<br>
+                🕐 Horário: {hora_atual}
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -1371,19 +1427,19 @@ def gerar_pdf_relatorio():
 
     ident_data = [
         [
-            Paragraph("<b>Modelo do Relé:</b>", normal_style),
+            Paragraph("<b>MODELO DO RELÉ:</b>", normal_style),
             Paragraph(str(st.session_state.get("rele", "") or "—"), normal_style),
-            Paragraph("<b>Fabricante:</b>", normal_style),
+            Paragraph("<b>FABRICANTE:</b>", normal_style),
             Paragraph(str(st.session_state.get("fabricante", "") or "—"), normal_style),
-            Paragraph("<b>Nº de Série:</b>", normal_style),
+            Paragraph("<b>Nº SÉRIE:</b>", normal_style),
             Paragraph(str(st.session_state.get("n_serie", "") or "—"), normal_style),
         ],
         [
-            Paragraph("<b>ID Equipamento:</b>", normal_style),
+            Paragraph("<b>ID EQUIPAMENTO:</b>", normal_style),
             Paragraph(str(st.session_state.get("equipamento", "") or "—"), normal_style),
-            Paragraph("<b>Solicitante:</b>", normal_style),
+            Paragraph("<b>SOLICITANTE:</b>", normal_style),
             Paragraph(str(st.session_state.get("solicitante", "") or "—"), normal_style),
-            Paragraph("<b>Local:</b>", normal_style),
+            Paragraph("<b>LOCAL:</b>", normal_style),
             Paragraph(str(st.session_state.get("local", "") or "—"), normal_style),
         ],
         [
@@ -1391,7 +1447,7 @@ def gerar_pdf_relatorio():
             Paragraph(str(st.session_state.get("oa", "") or "—"), normal_style),
             Paragraph("<b>O/S:</b>", normal_style),
             Paragraph(str(st.session_state.get("os_ensaio", "") or "—"), normal_style),
-            Paragraph("<b>Data do Ensaio:</b>", normal_style),
+            Paragraph("<b>DATA DO ENSAIO:</b>", normal_style),
             Paragraph(str(st.session_state.get("data_ensaio", "") or "—"), normal_style),
         ],
     ]
@@ -1768,6 +1824,22 @@ st.markdown("""
 
 # Linha 1 — Identificação do relé
 col1, col2, col3 = st.columns([1.5, 1.5, 1])
+
+st.markdown("""
+<style>
+div[data-testid="stTextInput"] input[aria-label="Modelo do Relé"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="Fabricante"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="Nº de Série"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="ID do Equipamento"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="Solicitante"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="Local do Serviço"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="O/A"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="O/S"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="Data"]::placeholder {
+    color: #787777 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 with col1:
     st.text_input(
