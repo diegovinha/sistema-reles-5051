@@ -578,42 +578,64 @@ st.markdown("""
 st.markdown("""
 <style>
 
-/* Caixa fechada do selectbox */
+/* ================================
+   SELECTBOX PADRÃO DO SISTEMA
+   FUNDO ESCURO + TEXTO BRANCO
+   ================================ */
+
+
+/* Caixa fechada */
 div[data-baseweb="select"] > div {
-    background-color: rgba(10,25,47,0.75) !important;
-    border: 1px solid rgba(255,255,255,0.35) !important;
+    background-color: rgba(10,25,47,0.90) !important;
+    border: 1px solid rgba(103,197,242,0.8) !important;
+    border-radius: 8px !important;
 }
 
 
 /* Texto selecionado */
 div[data-baseweb="select"] span {
-    color: white !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
 }
 
 
-/* Ícone da seta */
+/* Seta */
 div[data-baseweb="select"] svg {
-    fill: white !important;
+    fill: #ffffff !important;
 }
 
 
 /* Menu aberto */
+div[data-baseweb="popover"] {
+    background-color: #0a192f !important;
+}
+
+
 ul[role="listbox"] {
-    background-color: #ffffff !important;
+    background-color: #0a192f !important;
 }
 
 
-/* Texto das opções */
+/* Opções */
 li[role="option"] {
-    color: #111827 !important;
+    background-color: #0a192f !important;
+    color: #ffffff !important;
 }
 
 
-/* Opção selecionada no menu */
+/* Hover */
 li[role="option"]:hover {
-    background-color: #e5e7eb !important;
-    color: #111827 !important;
+    background-color: #1a365d !important;
+    color: #ffffff !important;
 }
+
+
+/* Selecionado */
+li[aria-selected="true"] {
+    background-color: #1a365d !important;
+    color: #ffffff !important;
+}
+
 
 </style>
 """, unsafe_allow_html=True)
