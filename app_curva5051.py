@@ -297,25 +297,16 @@ if not st.session_state.autenticado:
         font-weight: 600 !important;
         transition: 0.3s;
     }
-    /* Texto das abas inativas */
-    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
-        color: #cbd5e0 !important;
-        font-weight: 600 !important;
+    
+    .stTabs [data-testid="stTab"] p,
+    .stTabs [data-testid="stTab"] span {
+        color:#ffffff !important;
+        font-weight:700 !important;
     }
 
-    /* Texto da aba ativa */
-    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
-        color: #67C5F2 !important;
-        font-weight: 700 !important;
-    }
-
-    /* Caso o texto esteja em span ao invés de p */
-    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] span {
-        color: #cbd5e0 !important;
-    }
-
-    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] span {
-        color: #67C5F2 !important;
+    .stTabs [data-testid="stTab"][aria-selected="true"] p,
+    .stTabs [data-testid="stTab"][aria-selected="true"] span {
+        color:#ffffff !important;
     }
 
     /* Linha azul da aba selecionada */
@@ -633,15 +624,6 @@ div[style*="background-color: rgb(252, 231, 231)"] {
 .titulo-tabela {
     color:#ffffff !important;
     font-weight:700 !important;
-}
-
-[data-baseweb="tab-list"] button {
-    color: #ffffff !important;
-    font-weight:700 !important;
-}
-
-[data-baseweb="tab-list"] button[aria-selected="true"] {
-    color:#ffffff !important;
 }
 </style>
 """, unsafe_allow_html=True)
