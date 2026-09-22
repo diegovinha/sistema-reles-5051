@@ -551,17 +551,17 @@ st.markdown("""
     margin-bottom: 18px;
 }
 
-.icone-rele {
+.icone {
     font-size: 20px;
 }
 
-.titulo-rele {
+.titulo {
     font-size: 20px;
     font-weight: 700;
     color: #ffffff !important;
 }
 
-.tag-rele {
+.tag {
     background-color: #008000;
     color: white;
     padding: 4px 10px;
