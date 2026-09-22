@@ -298,37 +298,37 @@ if not st.session_state.autenticado:
         transition: 0.3s;
     }
     
-/* ================================
-   TABS LOGIN - TEXTO SEMPRE BRANCO
-================================ */
+    /* ================================
+    TABS LOGIN - TEXTO SEMPRE BRANCO
+    ================================ */
 
-.stTabs [role="tablist"] button {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-}
+    .stTabs [role="tablist"] button {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
 
-.stTabs [role="tablist"] button * {
-    color: #ffffff !important;
-    fill: #ffffff !important;
-}
+    .stTabs [role="tablist"] button * {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+    }
 
-.stTabs [role="tablist"] button[aria-selected="true"] * {
-    color: #ffffff !important;
-    fill: #ffffff !important;
-}
+    .stTabs [role="tablist"] button[aria-selected="true"] * {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+    }
 
-/* linha da aba ativa */
-.stTabs [data-baseweb="tab-highlight"] {
-    background-color: #67C5F2 !important;
-}
-</style>
-""", unsafe_allow_html=True)
+    /* linha da aba ativa */
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #67C5F2 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     _, col_centro, _ = st.columns([1, 2, 1])
     
     with col_centro:
         tab_login, tab_cadastro = st.tabs(
-            ["Entrar no Sistema", "Novo Cadastro"]
+            ["🔑 Entrar no Sistema", "📝 Novo Cadastro"]
         )
         with tab_login:
             with st.form("form_login"):
