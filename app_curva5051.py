@@ -271,8 +271,24 @@ if not st.session_state.autenticado:
 
     /* Texto digitado */
     div[data-baseweb="input"] input {
-        color: #ffffff !important;
         font-size: 16px !important;
+    }
+
+        /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+        div[data-baseweb="input"] input {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+    }
+
+
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+        div[data-baseweb="input"] input {
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+        }
     }
 
     /* Placeholder */
@@ -575,28 +591,50 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(""" 
 <style>
 
-[data-theme="dark"] div[data-baseweb="input"] input {
+/* Títulos da interface */
+.icone { 
+    font-size: 20px; 
+    color: #ffffff !important; 
+} 
+
+.titulo { 
+    font-size: 20px; 
+    font-weight: 700; 
+    color: #ffffff !important; 
+}
+
+
+/* ==============================
+   NUMBER INPUT / TEXT INPUT
+   ============================== */
+
+
+/* Fundo do campo */
+div[data-baseweb="input"] { 
+    background-color: rgba(255,255,255,0.10) !important; 
+}
+
+
+/* Texto digitado */
+div[data-baseweb="input"] input { 
     color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
-[data-theme="light"] div[data-baseweb="input"] input {
-    color: #000000 !important;
-}
 
-@media (prefers-color-scheme: dark) {
-    div[data-baseweb="input"] input {
-        color: #ffffff !important;
-    }
-}
-
+/* Caso esteja em Light Mode */
 @media (prefers-color-scheme: light) {
-    div[data-baseweb="input"] input {
+
+    div[data-baseweb="input"] input { 
         color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
     }
+
 }
+
 
 </style>
 """, unsafe_allow_html=True)
