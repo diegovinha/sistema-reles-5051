@@ -2347,28 +2347,15 @@ with col_info:
     f"""
     <div style="
         background-color: #FDE2E2;
+        color: #8B0000;
         padding: 14px 16px;
         border-radius: 8px;
         margin-top: 10px;
         margin-bottom: 10px;
-        color: #8B0000 !important;
     ">
-        <strong style="color:#8B0000 !important;">
-            Corrente de pickup:
-        </strong> 
-        <span style="color:#8B0000 !important;">
-            {p_50_Ativo:.1f} A
-        </span>
-
+        <strong>Corrente de pickup:</strong> {p_50_Ativo:.1f} A
         &nbsp; | &nbsp;
-
-        <strong style="color:#8B0000 !important;">
-            Tempo de atuação estimado:
-        </strong>
-
-        <span style="color:#8B0000 !important;">
-            {t_inst_Ativo:.3f} s
-        </span>
+        <strong>Tempo de atuação estimado:</strong> {t_inst_Ativo:.3f} s
     </div>
     """,
     unsafe_allow_html=True
@@ -2448,10 +2435,13 @@ with col_info:
             
     st.markdown("""
     <style>
-    /* Força textos e linhas da tabela a ficarem visíveis no fundo escuro */
-    .stMarkdown p, .stMarkdown span, .stMarkdown li, .stMarkdown strong, .stMarkdown small {
+
+    .stMarkdown p,
+    .stMarkdown li,
+    .stMarkdown small {
         color: #ffffff !important;
     }
+
     .katex, .stLatex {
         color: #ffffff !important;
     }
@@ -2465,8 +2455,8 @@ with col_info:
         border-collapse: collapse !important;
     }
 
-    .stAlert p, .stAlert span {
-        color: #ffffff !important;
+    .stAlert p {
+        color: var(--text-color) !important;
     }
     </style>
     """, unsafe_allow_html=True)
