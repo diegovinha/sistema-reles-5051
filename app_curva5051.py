@@ -2063,13 +2063,13 @@ st.markdown(
 )
 
 h1, h2, h3, h4, h5, h6, h7 = st.columns([1, 2, 2, 2, 2, 2, 1])
-with h1: st.markdown("<span style='color: white;'>**n°**</span>", unsafe_allow_html=True)
-with h2: st.markdown("<span style='color: white;'>**Corrente Primária (A)**</span>", unsafe_allow_html=True)
-with h3: st.markdown("<span style='color: white;'>**Corrente Secundária (A)**</span>", unsafe_allow_html=True)
-with h4: st.markdown("<span style='color: white;'>**Tempo Teórico**</span>", unsafe_allow_html=True)
-with h5: st.markdown("<span style='color: white;'>**Tempo Real (s)**</span>", unsafe_allow_html=True)
-with h6: st.markdown("<span style='color: white;'>**Erro (%)**</span>", unsafe_allow_html=True)
-with h7: st.markdown("<span style='color: white;'>**Apagar**</span>", unsafe_allow_html=True)
+with h1: st.markdown("**n°**")
+with h2: st.markdown("**Corrente Primária (A)**")
+with h3: st.markdown("**Corrente Secundária (A)**")
+with h4: st.markdown("**Tempo Teórico**")
+with h5: st.markdown("**Tempo Real (s)**")
+with h6: st.markdown("**Erro (%)**")
+with h7: st.markdown("**Apagar**")
 
 linhas_processadas = []
 indices_para_remover = []
