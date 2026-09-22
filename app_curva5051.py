@@ -2395,7 +2395,7 @@ with col_info:
         st.warning("⚠️ **Limites de Operação IEEE-ANSI:**\n\nA norma estabelece limites onde a curva atua rigorosamente dentro da faixa de sobrecorrente: \n$1,1 \\times I_{ac} < I_{ma} < 20 \\times I_{ac}$")
 
     else:
-        st.markdown("<small>Equações para relés digitais portadores de curvas destinadas à proteção de máquinas térmicas (motores, geradores e transformadores):</small>", unsafe_allow_html=True)
+        st.markdown("<large style='color: #ffffff !important;'>Equações para relés digitais portadores de curvas destinadas à proteção de máquinas térmicas (motores, geradores e transformadores):</small>", unsafe_allow_html=True)
         if curva_tipo == "I x T":
             st.latex(r"T_{51} = \frac{60}{\left( \frac{I_{ma}}{I_s} \right)} \times T_{ms}")
         else:
