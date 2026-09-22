@@ -1972,6 +1972,7 @@ st.markdown("""
 div[data-baseweb="input"], div[data-baseweb="select"] {
     background-color: rgba(255,255,255,0.10) !important;
     border-radius: 10px !important;
+}
 
 /* Texto selecionado do selectbox */
 div[data-baseweb="select"] span {
