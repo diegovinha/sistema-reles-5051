@@ -578,13 +578,6 @@ st.markdown("""
 st.markdown("""
 <style>
 
-/* SEUS CSS EXISTENTES */
-
-
-/* ==============================
-   NUMBER INPUT ADAPTATIVO
-   ============================== */
-
 [data-theme="dark"] div[data-baseweb="input"] input {
     color: #ffffff !important;
 }
@@ -604,7 +597,6 @@ st.markdown("""
         color: #000000 !important;
     }
 }
-
 
 </style>
 """, unsafe_allow_html=True)
@@ -1721,8 +1713,17 @@ st.markdown("""
     }
 
     div[data-baseweb="input"] input {
-        color: #ffffff !important;
         font-size: 16px !important;
+    }
+    /* Dark */
+    [data-theme="dark"] div[data-baseweb="input"] input {
+        color: #ffffff !important;
+    }
+
+
+    /* Light */
+    [data-theme="light"] div[data-baseweb="input"] input {
+        color: #000000 !important;
     }
     </style>
     """, unsafe_allow_html=True)
