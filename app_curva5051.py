@@ -1650,6 +1650,28 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <style>
+    /* Força todos os rótulos de campos de texto a ficarem com branco puro */
+    .stTextInput label, .stPasswordInput label {
+        color: #ffffff !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+    }
+
+    /* Garante o fundo translúcido e o texto digitado legível */
+    div[data-baseweb="input"] {
+        background-color: rgba(255,255,255,0.10) !important;
+        border-radius: 10px !important;
+    }
+
+    div[data-baseweb="input"] input {
+        color: #ffffff !important;
+        font-size: 16px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Linha 1 — Identificação do relé
 col1, col2, col3 = st.columns([1.5, 1.5, 1])
 
@@ -1835,8 +1857,8 @@ st.markdown(
 # ==========================================
 st.markdown("""
     <div class="secao-protecao_fase">
-        <span class="icone">⚙</span>
-        <span class="titulo">Configuração da Proteção 51</span>
+        <span class="icone, style="color #FFFFFF;"⚙</span>
+        <span class="titulo, style="color #FFFFFF;">Configuração da Proteção 51</span>
         <span class="tag">Curva de Fase</span>
     </div>
     """, unsafe_allow_html=True)
