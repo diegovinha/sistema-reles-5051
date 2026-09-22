@@ -2353,26 +2353,6 @@ with col_info:
         unsafe_allow_html=True
     )
          
-    st.markdown("""
-    <style>
-    /* Removemos as regras globais de texto branco para o Light Mode funcionar nativamente */
-
-    /* Mantemos apenas o ajuste das fórmulas LaTeX e tabelas para fundo escuro, 
-    ou usamos classes específicas se necessário */
-    .katex, .stLatex {
-        /* O LaTeX no Streamlit pode adaptar-se ou manter-se legível */
-    }
-
-    /* Bordas das tabelas com transparência sutil que funciona em ambos os temas */
-    .stTable th, .stTable td {
-        border: 1px solid rgba(128, 128, 128, 0.25) !important;
-    }
-    .stTable table {
-        border-collapse: collapse !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     if n_tipo_Ativo == "IEC-60255":
         st.latex(r"T_{51} = T_{ms} \times \frac{K}{\left(\frac{I_{ma}}{I_{ac}}\right)^\alpha - 1}")
         st.markdown("Onde $T_{ms}$ é o dial de tempo (Multiplicador de Tempo), $I_{ma}$ é a sobrecorrente máxima admitida e $I_{ac}$ é a corrente de partida (acionamento).") 
