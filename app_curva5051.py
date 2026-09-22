@@ -285,43 +285,50 @@ if not st.session_state.autenticado:
         color: #94a3b8 !important;
     }
 
-    /* Botão Entrar */
-    div.stButton > button {
+        /* 1. CORREÇÃO DAS ABAS (Entrar no Sistema / Novo Cadastro) */
+    .stTabs [data-baseweb="tab"] p, 
+    .stTabs [data-baseweb="tab"] span,
+    .stTabs [data-testid="stMarkdownContainer"] p,
+    .stTabs [data-testid="stMarkdownContainer"] span {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    /* Aba ativa (destaque em azul claro) */
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p,
+    .stTabs [data-baseweb="tab"][aria-selected="true"] span,
+    .stTabs [data-baseweb="tab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+        color: #67C5F2 !important;
+        -webkit-text-fill-color: #67C5F2 !important;
+        font-weight: 700 !important;
+    }
+
+    /* 2. CORREÇÃO DOS BOTÕES (Entrar, Finalizar Cadastro, etc.) */
+    div.stButton > button,
+    .stFormSubmitButton > button,
+    button[data-testid="baseButton-primary"],
+    button[data-testid="baseButton-secondary"] {
         background: linear-gradient(90deg, #1597e5, #67C5F2) !important;
-        color: white !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
         border: none !important;
         border-radius: 10px !important;
         height: 45px !important;
         font-size: 17px !important;
         font-weight: 600 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: 0.3s;
     }
-    /* Texto das abas inativas */
-    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
-        color: #cbd5e0 !important;
-        font-weight: 600 !important;
+
+    /* Efeito hover para os botões */
+    div.stButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        opacity: 0.9 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
 
-    /* Texto da aba ativa */
-    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
-        color: #67C5F2 !important;
-        font-weight: 700 !important;
-    }
-
-    /* Caso o texto esteja em span ao invés de p */
-    .stTabs [data-testid="stTab"] [data-testid="stMarkdownContainer"] span {
-        color: #cbd5e0 !important;
-    }
-
-    .stTabs [data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] span {
-        color: #67C5F2 !important;
-    }
-
-    /* Linha azul da aba selecionada */
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #67C5F2 !important;
-        height: 3px !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -370,11 +377,6 @@ if not st.session_state.autenticado:
                             st.rerun()
                         else:
                             st.error("Usuário não encontrado ou senha incorreta.")
-
-   
-        
-        
-        
 
         with tab_cadastro:
             defaults = {
