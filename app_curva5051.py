@@ -2336,22 +2336,23 @@ with col_info:
 """, unsafe_allow_html=True)
 
     st.markdown(
-        f"""
-        <div style="
-            background-color: #FDE2E2;
-            padding: 14px 16px;
-            border-radius: 8px;
-            margin-top: 8px;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        ">
-            <div style="color: #8B0000 !important;"><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
-            <div style="color: #8B0000 !important;"><strong>Curva característica:</strong> {curva_tipo}</div>
-            <div style="color: #8B0000 !important;"><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    f"""
+    <div style="
+        background-color: #FDE2E2;
+        color: #8B0000;
+        padding: 14px 16px;
+        border-radius: 8px;
+        margin-top: 8px;
+        margin-bottom: 10px;
+        line-height: 1.3;
+    ">
+        <div><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
+        <div><strong>Curva característica:</strong> {curva_tipo}</div>
+        <div><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
          
 
     st.markdown("""
