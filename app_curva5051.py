@@ -218,7 +218,7 @@ if not st.session_state.autenticado:
     # ----------------------------------------------------
     # CONVERTE A IMAGEM DE FUNDO PARA BASE64
     # ----------------------------------------------------
-    caminho_bg = os.path.join(diretorio_atual, "background.png")
+    caminho_bg = os.path.join(diretorio_atual, "background_2.png")
     bg_base64 = get_base64_image(caminho_bg)
 
     # ----------------------------------------------------
