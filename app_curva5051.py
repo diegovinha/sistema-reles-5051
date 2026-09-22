@@ -271,7 +271,7 @@ if not st.session_state.autenticado:
 
     /* Texto digitado */
     div[data-baseweb="input"] input {
-        color:var(--text-color) !important;
+        color: #ffffff !important;
         font-size: 16px !important;
     }
 
@@ -518,14 +518,14 @@ st.markdown("""
 
 .icone {
     font-size: 20px;
-    color:var(--text-color);
+    color: #ffffff !important;
 
 }
 
 .titulo {
     font-size: 20px;
     font-weight: 700;
-    color:var(--text-color);
+    color: #ffffff !important;
 }
 
 .tag {
@@ -560,7 +560,7 @@ st.markdown("""
 .secao-rele .titulo {
     font-size: 20px;
     font-weight: 700;
-    color:var(--text-color);
+    color: #ffffff !important;
 }
 
 .secao-rele .tag {
@@ -1675,7 +1675,7 @@ st.markdown("""
 st.markdown("""
     <style>
     .stTextInput label, .stPasswordInput label {
-        color:var(--text-color) !important;
+        color: #ffffff !important;
         font-size: 15px !important;
         font-weight: 500 !important;
     }
@@ -1687,7 +1687,7 @@ st.markdown("""
     }
 
     div[data-baseweb="input"] input {
-        color:var(--text-color) !important;
+        color: #ffffff !important;
         font-size: 16px !important;
     }
     </style>
@@ -1891,7 +1891,7 @@ st.markdown("""
 .stPasswordInput label, 
 .stSelectbox label, 
 .stNumberInput label {
-    color:var(--text-color) !important;
+    color: #ffffff !important;
     font-size: 15px !important;
     font-weight: 500 !important;
 }
@@ -2090,8 +2090,7 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
     )
   with col_r3:
     i_sec = iprim_val / rel_tc_Ativo
-    #st.text(f"{i_sec:.2f} A")
-    st.markdown(f"<span>{i_sec:.2f} A</span>", unsafe_allow_html=True)
+    st.text(f"{i_sec:.2f} A")
 
   with col_r4:
     t_teorico = calcular_teorico_geral(iprim_val, n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, p_50_Ativo, t_inst_Ativo)
@@ -2099,8 +2098,7 @@ for idx, p in enumerate(st.session_state.pontos_ensaio):
       t_teorico_str = "Infinito"
     else:
       t_teorico_str = f"{t_teorico:.3f} s"
-    #st.text(t_teorico_str)
-    st.markdown(f"<span>{t_teorico_str}</span>", unsafe_allow_html=True)
+    st.text(t_teorico_str)
 
   with col_r5:
     treal_val = st.number_input(
@@ -2172,7 +2170,7 @@ with col_graf:
     .stSelectbox label, 
     .stNumberInput label,
     .stCheckbox label {
-        color:var(--text-color) !important;
+        color: #ffffff !important;
         font-size: 15px !important;
         font-weight: 500 !important;
     }
@@ -2365,9 +2363,11 @@ with col_info:
         color: #ffffff !important;
     }
 
+    /* Restaura o texto e adiciona linhas/bordas visíveis na st.table */
     .stTable th, .stTable td {
-        border: 1px solid rgba(128, 128, 128, 0.25) !important;
-}
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    }
     .stTable table {
         border-collapse: collapse !important;
     }
