@@ -753,35 +753,20 @@ if "dados_relatorio" in st.query_params:
 # ==========================================
 # 4. RENDERIZAÇÃO DA NAVBAR E CSS
 # ==========================================
-# ----------------------------------------------------
-# CONVERTE A IMAGEM DE FUNDO PARA BASE64
-# ----------------------------------------------------
-caminho_bg = os.path.join(diretorio_atual, "background.png")
-bg_base64 = get_base64_image(caminho_bg)
-
-st.markdown("""
-<style>
-
-/* Área principal do sistema */
-[data-testid="stMainBlockContainer"] {
-    background-color: #ffffff;
-    color: #1a202c;
-    border-radius: 10px;
-    padding: 2rem;
-}
-
-/* Textos da área principal */
-[data-testid="stMainBlockContainer"] p,
-[data-testid="stMainBlockContainer"] label,
-[data-testid="stMainBlockContainer"] h1,
-[data-testid="stMainBlockContainer"] h2,
-[data-testid="stMainBlockContainer"] h3,
-[data-testid="stMainBlockContainer"] span {
-    color: #1a202c;
-}
-
-</style>
-""", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.75)), url("data:image/png;base64,{bg_base64}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 st.markdown(
