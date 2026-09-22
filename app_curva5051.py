@@ -2152,10 +2152,6 @@ st.markdown("---")
 col_graf, col_info = st.columns([2, 1])
 
 with col_graf:
-  st.markdown(
-    '<div class="secao-titulo" style="color: #FFFFFF;"> 📉 Curva do Coordenograma 50/51</div>',
-    unsafe_allow_html=True
-)
 
   st.markdown("""
     <div class="secao-protecao_fase">
@@ -2298,9 +2294,9 @@ with col_info:
     st.markdown(
         """
         <div style="
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.7;
-            color: #455A64;
+            color: #ffffff;
             text-align: justify;
         ">
         A unidade instantânea <b>ANSI 50</b> atua quando a corrente
