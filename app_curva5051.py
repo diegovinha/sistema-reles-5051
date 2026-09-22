@@ -1877,7 +1877,7 @@ st.markdown(
 st.markdown("""
     <div class="secao-protecao_fase">
         <span class="icone">⚙</span>
-        <span class="titulo">Configuração da Proteção 51</span>
+        <span class="titulo">Configuração da Unidade Temporizada (51)</span>
         <span class="tag">Curva de Fase</span>
     </div>
     """, unsafe_allow_html=True)
@@ -1982,7 +1982,7 @@ if norma_tipo == "Personalizada":
 st.markdown("""
     <div class="secao-protecao_fase">
         <span class="icone">⚙</span>
-        <span class="titulo">Configuração do Critério da Unidade Instantânea (50)</span>
+        <span class="titulo">Configuração da Unidade Instantânea (50)</span>
         <span class="tag">Curva de Fase</span>
     </div>
     """, unsafe_allow_html=True)
@@ -1991,7 +1991,7 @@ c_inst1, c_inst2, c_inst3 = st.columns(3)
 
 with c_inst1:
   criterio_50 = st.selectbox(
-      "Critério de Ajuste (50)",
+      "CRITÉRIO DE AJUSTE (50)",
       ["Manual Direto", "Corrente Transitória / Inrush (Ip = k * Itran)", "Curto-Circuitos Bifásicos (Ip = k * Icc2F)"],
       key="criterio_50"
   )
@@ -2011,7 +2011,7 @@ with c_inst2:
     partida_50 = st.number_input("PARTIDA 50 MANUAL (A PRIM.)", min_value=0.0, step=5.0, key="partida_50_manual", placeholder="Digite um valor de corrente (A)")
 
 with c_inst3:
-  tempo_instantaneo = st.number_input("Tempo de Atuação 50 (s)", min_value=0.0, max_value=1.0, value=0.0, step=0.005, format="%.3f", key="tempo_instantaneo", placeholder="Digite um valor de tempo (s)")
+  tempo_instantaneo = st.number_input("TEMPO DE ATUAÇÃO 50 (s)", min_value=0.0, max_value=1.0, value=0.0, step=0.005, format="%.3f", key="tempo_instantaneo", placeholder="Digite um valor de tempo (s)")
 
 # Parâmetros ativos atuais da tela
 n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, tol_Ativo, t_inst_Ativo, crit_50_Ativo, p_50_man_Ativo, rtc_str_Ativo, rel_tc_Ativo = get_parametros_sessao()
@@ -2020,10 +2020,12 @@ p_50_Ativo = p_50_man_Ativo
 # ==========================================
 # 9. GERENCIAMENTO DOS PONTOS DE ENSAIO
 # ==========================================
-st.markdown(
-    '<div class="secao-titulo">⚙ Painel de Controle dos Pontos de Ensaio</div>',
-    unsafe_allow_html=True
-)
+st.markdown("""
+    <div class="secao-protecao_fase">
+        <span class="icone">⚙</span>
+        <span class="titulo">Painel de Controle dos Pontos de Ensaio</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 with st.form("form_add_ponto", clear_on_submit=True):
   col_f1, col_f2, col_f3, col_f4 = st.columns([1, 2, 2, 1])
@@ -2046,10 +2048,13 @@ with st.form("form_add_ponto", clear_on_submit=True):
     })
     st.rerun()
 
-st.markdown(
-    '<div class="secao-titulo">⚙ Relatório de Resultados e Erro Relativo</div>',
-    unsafe_allow_html=True
-)
+st.markdown("""
+    <div class="secao-protecao_fase">
+        <span class="icone">⚙</span>
+        <span class="titulo">Relatório de Resultados e Erro Relativo</span>
+    </div>
+    """, unsafe_allow_html=True)
+
 st.markdown(
     "<normalize>Abaixo estão listados todos os pontos ativos do ensaio com cálculo dinâmico imediato. (🟥 - Teste Reprovado e 🟩 - Teste Aprovado)</normalize>",
     unsafe_allow_html=True,
@@ -2148,9 +2153,33 @@ col_graf, col_info = st.columns([2, 1])
 
 with col_graf:
   st.markdown(
-    '<div class="secao-titulo"> 📉 Curva do Coordenograma 50/51</div>',
+    '<div class="secao-titulo" style="color: #FFFFFF;"> 📉 Curva do Coordenograma 50/51</div>',
     unsafe_allow_html=True
 )
+
+  with col_graf:
+    st.markdown("""
+    <div class="secao-protecao_fase">
+        <span class="icone">📉</span>
+        <span class="titulo">Curva do Coordenograma 50/51</span>
+    </div>
+    """, unsafe_allow_html=True)    
+
+    st.markdown("""
+    <style>
+    /* Labels dos campos de texto, números, selects E checkbox em branco */
+    .stTextInput label, 
+    .stPasswordInput label, 
+    .stSelectbox label, 
+    .stNumberInput label,
+    .stCheckbox label {
+        color: #ffffff !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
   col_chk1, col_chk2 = st.columns(2)
   with col_chk1:
     mostrar_legenda_teo = st.checkbox("Exibir legenda nos pontos Teóricos", value=True)
