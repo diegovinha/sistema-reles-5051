@@ -20,6 +20,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 import sqlite3
 import hashlib
 import secrets
+from datetime import datetime
 
 # Inicializa o banco de dados SQLite local com modo WAL (evita travamentos)
 def inicializar_banco():
@@ -108,6 +109,7 @@ def get_base64_image(image_path):
 # Caminho relativo seguro (funciona no PC e na Nuvem)
 diretorio_atual = os.path.dirname(os.path.abspath(__file__))
 caminho_imagem = os.path.join(diretorio_atual, "logo_superior.png")
+caminho_icone = os.path.join(diretorio_atual, "rele_imagem_2.png")
 
 img_base64 = get_base64_image(caminho_imagem)
 
@@ -115,7 +117,7 @@ img_base64 = get_base64_image(caminho_imagem)
 # 1. CONFIGURAÇÃO DA PÁGINA E AUTENTICAÇÃO (TOPO DO CÓDIGO)
 # ==========================================
 st.set_page_config(
-    page_title="Ensaio de Curva ANSI (50/51)", layout="wide"
+    page_title="Ensaio de Curva ANSI (50/51)", page_icon=caminho_icone, layout="wide"
 )
 
 # 1. Inicializa o estado se não existir
@@ -144,14 +146,22 @@ if not st.session_state.autenticado and "token" in st.query_params:
 
 # Inicialização dos demais estados da aplicação
 if "norma_tipo" not in st.session_state: st.session_state.norma_tipo = "IEC-60255"
+if "norma_tipo_neutro" not in st.session_state: st.session_state.norma_tipo_neutro = "IEC-60255"
 if "curva_tipo_iec" not in st.session_state: st.session_state.curva_tipo_iec = "Extremamente inversa"
 if "curva_tipo_ieee" not in st.session_state: st.session_state.curva_tipo_ieee = "Moderadamente inversa"
+if "curva_tipo_iec_neutro" not in st.session_state: st.session_state.curva_tipo_iec_neutro = "Extremamente inversa"
+if "curva_tipo_ieee_neutro" not in st.session_state: st.session_state.curva_tipo_ieee_neutro = "Moderadamente inversa"
 if "curva_tipo_outras" not in st.session_state: st.session_state.curva_tipo_outras = "I x T"
 if "partida_51" not in st.session_state: st.session_state.partida_51 = 0.0
+if "partida_51_neutro" not in st.session_state: st.session_state.partida_51_neutro = 0.0
 if "dial_tms" not in st.session_state: st.session_state.dial_tms = 0.100
+if "dial_tms_neutro" not in st.session_state: st.session_state.dial_tms_neutro = 0.100
 if "tolerancia" not in st.session_state: st.session_state.tolerancia = 5.0
+if "tolerancia_neutro" not in st.session_state: st.session_state.tolerancia_neutro = 5.0
 if "tempo_instantaneo" not in st.session_state: st.session_state.tempo_instantaneo = 0.0
+if "tempo_instantaneo_neutro" not in st.session_state: st.session_state.tempo_instantaneo_neutro = 0.0
 if "partida_50_manual" not in st.session_state: st.session_state.partida_50_manual = 0.0
+if "partida_50_manual_neutro" not in st.session_state: st.session_state.partida_50_manual_neutro = 0.0
 if "rtc_selectbox" not in st.session_state: st.session_state.rtc_selectbox = "200 / 5"
 if "rtc_str_input" not in st.session_state: st.session_state.rtc_str_input = "1000/5"
 if "criterio_50" not in st.session_state: st.session_state.criterio_50 = "Manual Direto"
@@ -165,11 +175,19 @@ if "n_serie" not in st.session_state: st.session_state.n_serie = ""
 if "equipamento" not in st.session_state: st.session_state.equipamento = ""
 if "solicitante" not in st.session_state: st.session_state.solicitante = ""
 if "local" not in st.session_state: st.session_state.local = ""
+if "prof_ensaio" not in st.session_state: st.session_state.prof_ensaio = ""
 if "oa" not in st.session_state: st.session_state.oa = ""
 if "os_ensaio" not in st.session_state: st.session_state.os_ensaio = ""
 if "data_ensaio" not in st.session_state: st.session_state.data_ensaio = ""
 if "pontos_ensaio" not in st.session_state:
   st.session_state.pontos_ensaio = [
+      {"id": "I1", "iprim": 0.0, "treal": 0.000},
+      {"id": "I2", "iprim": 0.0, "treal": 0.000},
+      {"id": "I3", "iprim": 0.0, "treal": 0.000},
+      {"id": "I4", "iprim": 0.0, "treal": 0.000},
+      {"id": "I5", "iprim": 0.0, "treal": 0.000},
+  ]
+  st.session_state.pontos_ensaio_neutro = [
       {"id": "I1", "iprim": 0.0, "treal": 0.000},
       {"id": "I2", "iprim": 0.0, "treal": 0.000},
       {"id": "I3", "iprim": 0.0, "treal": 0.000},
@@ -522,33 +540,101 @@ st.markdown("""
     margin-bottom: 18px;
 }
 
-.icone {
-    font-size: 20px;
-    color: #ffffff !important;
+    .icone {
+        font-size: 20px;
+        color: #ffffff !important;
 
+    }
+
+    .titulo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff !important;
+    }
+
+    .tag {
+        background-color: #D20A2E;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: auto;
+    }
+
+.secao-neutro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
 }
 
-.titulo {
-    font-size: 20px;
-    font-weight: 700;
-    color: #ffffff !important;
+    .icone-neutro {
+        font-size: 20px;
+        color: #ffffff !important;
+    }
+
+    .titulo-neutro {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff !important;
+    }
+
+    .tag-neutro {
+        background-color: #0056b3;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: auto;
+    }
+
+/*================
+   Título Equipamento
+=================*/
+.titulo-principal-rele {
+        position: relative;
+        height: 50px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        margin-bottom: 6px;
+        border: 0px solid #FFFFFF;
 }
+    .bloco-verde-rele {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: #008000;
+        border-bottom: 0px solid rgba(255, 255, 255, 0.8); /* Linha divisória horizontal */
+    }
+    .bloco-cinza-rele {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: #878787;
+    }
+    .texto-centralizado-rele {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        color: white;
+        font-size: 23px;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Ajuda a destacar o texto nas duas cores */
+    }
 
-.tag {
-    background-color: #D20A2E;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-left: auto;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
 .secao-rele {
     display: flex;
     align-items: center;
@@ -557,32 +643,25 @@ st.markdown("""
     padding-bottom: 10px;
     margin-bottom: 18px;
 }
+    .icone-rele {
+        font-size: 20px;
+    }
 
-/* Escopo isolado para esta secção específica */
-.secao-rele .icone {
-    font-size: 20px;
-}
+    .titulo-rele .titulo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff !important;
+    }
 
-.secao-rele .titulo {
-    font-size: 20px;
-    font-weight: 700;
-    color: #ffffff !important;
-}
-
-.secao-rele .tag {
-    background-color: #008000;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-left: auto;
-}
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown(""" 
-<style>
+    .tag-rele {
+        background-color: #008000;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: auto;
+    }
 
 /* Títulos da interface */
 .icone { 
@@ -626,7 +705,6 @@ div[style*="background-color: rgb(252, 231, 231)"] {
     color: #1a202c !important;
 }
 
-
 .card p, 
 .card span, 
 .card div {
@@ -638,11 +716,127 @@ div[style*="background-color: rgb(252, 231, 231)"] {
     font-weight:700 !important;
 }
 
+/* ==============================
+FUNDO GERAL
+============================== */
+    
+.stApp {
+    background-color: #F5F7FA;
+}
+
+/* ==============================
+    TÍTULO 50/51/50N/51N
+    ============================== */
+
+.titulo-principal-curvas {
+    position: relative;
+    height: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    margin-bottom: 6px;
+    border: 0px solid #FFFFFF;
+}
+.bloco-vermelho-curvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: #C8102E;
+    border-bottom: 0px solid rgba(255, 255, 255, 0.8); /* Linha divisória horizontal */
+}
+.bloco-azul-curvas {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: #0056b3; /* Cor azul */
+}
+.texto-centralizado-curvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    color: white;
+    font-size: 23px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Ajuda a destacar o texto nas duas cores */
+}
+    
+/* ==============================
+SUBTÍTULO
+============================== */
+.subtitulo {
+    color: #5F6B7A;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-bottom: 25px;
+}
+
+/* ==============================
+TÍTULO DAS SEÇÕES
+============================== */
+.secao-titulo {
+    color: #263238;
+    font-size: 17px;
+    font-weight: 700;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #D20A2E;
+}
+
+/* ==============================
+CARD DOS PARÂMETROS
+============================== */
+.painel-config {
+    background-color: white;
+    padding: 20px 20px 10px 20px;
+    border-radius: 12px;
+    border: 1px solid #E1E5EA;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* ==============================
+LABELS DOS INPUTS
+============================== */
+label {
+    font-weight: 600 !important;
+    color: #37474F !important;
+}
+
+/* ==============================
+SELECTBOX / INPUTS
+============================== */
+div[data-baseweb="select"] > div {
+    border-radius: 7px;
+    border: 1px solid #D8DDE3;
+}
+
+/* ==============================
+ESPAÇAMENTO
+============================== */
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+}  
 </style>
-""", unsafe_allow_html=True)
+""",
+unsafe_allow_html=True,
+)
 
 # ==========================================
 # 2. CAPTURA DOS DADOS DA INTERFACE PARA SALVAMENTO E RELATÓRIO
+# ==========================================
+# ==========================================
+# 2. CAPTURA DOS DADOS DA FASE
 # ==========================================
 def obter_dados_atuais():
     n_tipo = st.session_state.get("norma_tipo", "IEC-60255")
@@ -654,13 +848,11 @@ def obter_dados_atuais():
         c_tipo = st.session_state.get("curva_tipo_outras", "I x T")
     else:
         c_tipo = "Personalizada"
-
     rtc_sel = st.session_state.get("rtc_selectbox", "200 / 5")
     if rtc_sel == "Personalizado (Digitar)":
         r_str = st.session_state.get("rtc_str_input", "1000/5")
     else:
         r_str = rtc_sel
-
     pontos_atualizados = []
     for idx, p in enumerate(st.session_state.get("pontos_ensaio", [])):
         iprim_val = st.session_state.get(f"iprim_{idx}", p.get("iprim"))
@@ -672,39 +864,101 @@ def obter_dados_atuais():
         })
 
     return {
+      # Identificação do ensaio
+      "rele": st.session_state.get("rele", ""),
+      "fabricante": st.session_state.get("fabricante", ""),
+      "n_serie": st.session_state.get("n_serie", ""),
+      "equipamento": st.session_state.get("equipamento", ""),
+      "solicitante": st.session_state.get("solicitante", ""),
+      "local": st.session_state.get("local", ""),
+      "oa": st.session_state.get("oa", ""),
+      "os_ensaio": st.session_state.get("os_ensaio", ""),
+      "data_ensaio": st.session_state.get("data_ensaio", ""),
+      # Responsável pelo ensaio
+      "usuario_logado": st.session_state.get("usuario_logado", ""),
+      "crea_usuario": st.session_state.get("crea_usuario", ""),
+      "celular_usuario": st.session_state.get("celular_usuario", ""),
+      "empresa_usuario": st.session_state.get("empresa_usuario", ""),
+      # Parâmetros de Fase
+      "norma_tipo": n_tipo,
+      "curva_tipo": c_tipo,
+      "partida_51": st.session_state.get("partida_51", 10.0),
+      "dial_tms": st.session_state.get("dial_tms", 0.18),
+      "tolerancia": st.session_state.get("tolerancia", 5.0),
+      "tempo_instantaneo": st.session_state.get("tempo_instantaneo", 0.075),
+      "rtc_str": r_str,
+      "criterio_50": st.session_state.get("criterio_50", "Manual Direto"),
+      "partida_50_manual": st.session_state.get("partida_50_manual", 75.0),
+      "k_input_user_ieee": st.session_state.get("k_input_user_ieee", 0.0515),
+      "alpha_input_user_ieee": st.session_state.get("alpha_input_user_ieee", 2.0),
+      "l_input_user_ieee": st.session_state.get("l_input_user_ieee", 0.1217),
+      "nome_arquivo": st.session_state.get("nome_arquivo", ""),
+      "pontos_ensaio": pontos_atualizados
+    }
+
+# ==========================================
+# 2. CAPTURA DOS DADOS DO NEUTRO
+# ==========================================
+def obter_dados_atuais_neutro():
+    n_tipo_neutro = st.session_state.get("norma_tipo_neutro", "IEC-60255")
+    if n_tipo_neutro == "IEC-60255":
+        c_tipo_neutro = st.session_state.get("curva_tipo_iec_neutro", "Extremamente inversa")
+    elif n_tipo_neutro == "IEEE-ANSI":
+        c_tipo_neutro = st.session_state.get("curva_tipo_ieee_neutro", "Moderadamente inversa")
+    elif n_tipo_neutro == "Proteção de Máquinas Térmicas":
+        c_tipo_neutro = st.session_state.get("curva_tipo_outras_neutro", "I x T")
+    else:
+        c_tipo_neutro = "Personalizada_neutro"
+
+    rtc_sel_neutro = st.session_state.get("rtc_selectbox_neutro", "200 / 5")
+    if rtc_sel_neutro == "Personalizado (Digitar)":
+        r_str_neutro = st.session_state.get("rtc_str_input_neutro", "1000/5")
+    else:
+        r_str_neutro = rtc_sel_neutro
+
+    pontos_atualizados_neutro = []
+    for idx_neutro, p_neutro in enumerate(st.session_state.get("pontos_ensaio", [])):
+        iprim_val_neutro = st.session_state.get(f"iprim_neutro_{idx_neutro}", p_neutro.get("iprim_neutro"))
+        treal_val_neutro = st.session_state.get(f"treal_neutro_{idx_neutro}", p_neutro.get("treal_neutro"))
+        pontos_atualizados_neutro.append({
+            "id": p_neutro.get("id"),
+            "iprim": iprim_val_neutro,
+            "treal": treal_val_neutro
+        })
+
+    return{
     # Identificação do ensaio
-    "rele": st.session_state.get("rele", ""),
-    "fabricante": st.session_state.get("fabricante", ""),
-    "n_serie": st.session_state.get("n_serie", ""),
-    "equipamento": st.session_state.get("equipamento", ""),
-    "solicitante": st.session_state.get("solicitante", ""),
-    "local": st.session_state.get("local", ""),
-    "oa": st.session_state.get("oa", ""),
-    "os_ensaio": st.session_state.get("os_ensaio", ""),
-    "data_ensaio": st.session_state.get("data_ensaio", ""),
+      "rele": st.session_state.get("rele", ""),
+      "fabricante": st.session_state.get("fabricante", ""),
+      "n_serie": st.session_state.get("n_serie", ""),
+      "equipamento": st.session_state.get("equipamento", ""),
+      "solicitante": st.session_state.get("solicitante", ""),
+      "local": st.session_state.get("local", ""),
+      "oa": st.session_state.get("oa", ""),
+      "os_ensaio": st.session_state.get("os_ensaio", ""),
+      "data_ensaio": st.session_state.get("data_ensaio", ""),
+      # Responsável pelo ensaio
+      "usuario_logado": st.session_state.get("usuario_logado", ""),
+      "crea_usuario": st.session_state.get("crea_usuario", ""),
+      "celular_usuario": st.session_state.get("celular_usuario", ""),
+      "empresa_usuario": st.session_state.get("empresa_usuario", ""),
+      # Parâmetros de Neutro (com sufixos _neutro)
+      "norma_tipo": n_tipo_neutro,
+      "curva_tipo": c_tipo_neutro,
+      "partida_51": st.session_state.get("partida_51N", 10.0),
+      "dial_tms": st.session_state.get("dial_tms_neutro", 0.18),
+      "tolerancia": st.session_state.get("tolerancia_neutro", 5.0),
+      "tempo_instantaneo": st.session_state.get("tempo_instantaneo_neutro", 0.075),
+      "rtc_str": r_str_neutro,
+      "criterio_50": st.session_state.get("criterio_50_neutro", "Manual Direto"),
+      "partida_50_manual": st.session_state.get("partida_50_manual_neutro", 75.0),
+      "k_input_user_ieee": st.session_state.get("k_input_user_ieee_neutro", 0.0515),
+      "alpha_input_user_ieee": st.session_state.get("alpha_input_user_ieee_neutro", 2.0),
+      "l_input_user_ieee": st.session_state.get("l_input_user_ieee_neutro", 0.1217),
+      "nome_arquivo": st.session_state.get("nome_arquivo", ""),
+      "pontos_ensaio": pontos_atualizados_neutro
 
-    # Responsável pelo ensaio
-    "usuario_logado": st.session_state.get("usuario_logado", ""),
-    "crea_usuario": st.session_state.get("crea_usuario", ""),
-    "celular_usuario": st.session_state.get("celular_usuario", ""),
-    "empresa_usuario": st.session_state.get("empresa_usuario", ""),
-
-    # Parâmetros do ensaio
-    "norma_tipo": n_tipo,
-    "curva_tipo": c_tipo,
-    "partida_51": st.session_state.get("partida_51", 10.0),
-    "dial_tms": st.session_state.get("dial_tms", 0.18),
-    "tolerancia": st.session_state.get("tolerancia", 5.0),
-    "tempo_instantaneo": st.session_state.get("tempo_instantaneo", 0.075),
-    "rtc_str": r_str,
-    "criterio_50": st.session_state.get("criterio_50", "Manual Direto"),
-    "partida_50_manual": st.session_state.get("partida_50_manual", 75.0),
-    "k_input_user_ieee": st.session_state.get("k_input_user_ieee", 0.0515),
-    "alpha_input_user_ieee": st.session_state.get("alpha_input_user_ieee", 2.0),
-    "l_input_user_ieee": st.session_state.get("l_input_user_ieee", 0.1217),
-    "nome_arquivo": st.session_state.get("nome_arquivo", ""),
-    "pontos_ensaio": pontos_atualizados
-}
+    }
 
 # ==========================================
 # 3. ROTINAS DE INICIALIZAÇÃO (NOVO E ABRIR)
@@ -713,7 +967,7 @@ token_atual = st.query_params.get("token", "")
 
 if st.query_params.get("acao") == "novo":
     st.session_state.norma_tipo = "IEC-60255"
-    st.session_state.curva_tipo_iec = "Normalmente inversa"
+    st.session_state.curva_tipo_iec = "Extremamente inversa"
     st.session_state.partida_51 = 0.0
     st.session_state.dial_tms = 0.100
     st.session_state.tolerancia = 5.0
@@ -721,6 +975,15 @@ if st.query_params.get("acao") == "novo":
     st.session_state.partida_50_manual = 0.0
     st.session_state.rtc_selectbox = "200 / 5"
     st.session_state.criterio_50 = "Manual Direto"
+    st.session_state.norma_tipo_neutro = "IEC-60255"
+    st.session_state.curva_tipo_iec_neutro = "Extremamente inversa"
+    st.session_state.partida_51_neutro = 0.0
+    st.session_state.dial_tms_neutro = 0.100
+    st.session_state.tolerancia_neutro = 5.0
+    st.session_state.tempo_instantaneo_neutro = 0.0
+    st.session_state.partida_50_manual_neutro = 0.0
+    st.session_state.rtc_selectbox_neutro = "200 / 5"
+    st.session_state.criterio_50_neutro = "Manual Direto"
     st.session_state.nome_arquivo = ""
     st.session_state.caminho_absoluto = None
     st.session_state.ultimo_salvamento = "Nunca salvo"
@@ -741,9 +1004,19 @@ if st.query_params.get("acao") == "novo":
       {"id": "I4", "iprim": 0.0, "treal": 0.000},
       {"id": "I5", "iprim": 0.0, "treal": 0.000},
     ]
+    st.session_state.pontos_ensaio_neutro = [
+      {"id": "I1", "iprim": 0.0, "treal": 0.000},
+      {"id": "I2", "iprim": 0.0, "treal": 0.000},
+      {"id": "I3", "iprim": 0.0, "treal": 0.000},
+      {"id": "I4", "iprim": 0.0, "treal": 0.000},
+      {"id": "I5", "iprim": 0.0, "treal": 0.000},
+    ]
     for idx in range(10):
         if f"iprim_{idx}" in st.session_state: del st.session_state[f"iprim_{idx}"]
         if f"treal_{idx}" in st.session_state: del st.session_state[f"treal_{idx}"]
+    for idx_neutro in range(10):
+        if f"iprim_neutro_{idx_neutro}" in st.session_state: del st.session_state[f"iprim_{idx_neutro}"]
+        if f"treal_neutro_{idx_neutro}" in st.session_state: del st.session_state[f"treal_{idx_neutro}"]   
         # Remove somente a ação "novo" e preserva a autenticação
     st.query_params.clear()
     st.query_params["token"] = token_atual
@@ -1237,7 +1510,7 @@ with st.sidebar:
     )
 
 # ==========================================
-# FUNÇÕES DE APOIO E CÁLCULO DIRETO DA SESSÃO
+# FUNÇÕES DE APOIO E CÁLCULO DIRETO DA SESSÃO_FASE
 # ==========================================
 def get_parametros_sessao():
     n_tipo = st.session_state.get("norma_tipo", "IEC-60255")
@@ -1330,6 +1603,97 @@ def calcular_teorico_geral(i_prim, n_tipo, c_tipo, p_51, tms, p_50, t_inst):
         else:
             return (540 / (m**2)) * tms
 
+def get_parametros_sessao_neutro():
+    n_tipo_neutro = st.session_state.get("norma_tipo_neutro", "IEC-60255")
+    if n_tipo_neutro == "IEC-60255":
+        c_tipo_neutro = st.session_state.get("curva_tipo_iec_neutro", "Extremamente inversa")
+    elif n_tipo_neutro == "IEEE-ANSI":
+        c_tipo_neutro = st.session_state.get("curva_tipo_ieee_neutro", "Moderadamente inversa")
+    elif n_tipo_neutro == "Outras":
+        c_tipo_neutro = st.session_state.get("curva_tipo_outras_neutro", "I x T")
+    else: 
+        c_tipo_neutro = st.session_state.get("curva_personalizada_neutro", "Personalizada")
+
+    p_51_neutro = st.session_state.get("partida_51_neutro", 0.0)
+    tms_neutro = st.session_state.get("dial_tms_neutro", 0.100)
+    tol_neutro = st.session_state.get("tolerancia_neutro", 5.0)
+    t_inst_neutro = st.session_state.get("tempo_instantaneo_neutro", 0.0)
+    crit_50_neutro = st.session_state.get("criterio_50_neutro", "Manual Direto")
+    p_50_man_neutro = st.session_state.get("partida_50_manual_neutro", 0.0)
+    
+    rtc_sel_neutro = st.session_state.get("rtc_selectbox_neutro", "200 / 5")
+    if rtc_sel_neutro == "Personalizado (Digitar)":
+        r_str_neutro = st.session_state.get("rtc_str_input_neutro", "1000/5")
+    else:
+        r_str_neutro = rtc_sel_neutro
+        
+    try:
+        tc_p_neutro, tc_s_neutro = map(float, r_str_neutro.replace(" ", "").split("/"))
+        rel_tc_neutro = tc_p_neutro / tc_s_neutro
+    except Exception:
+        rel_tc_neutro = 40.0
+        
+    return n_tipo_neutro, c_tipo_neutro, p_51_neutro, tms_neutro, tol_neutro, t_inst_neutro, crit_50_neutro, p_50_man_neutro, r_str_neutro, rel_tc_neutro
+
+def get_parametros_norma_dict_neutro(n_tipo_neutro, c_tipo_neutro):
+    if n_tipo_neutro == "IEC-60255":
+        tabela = {
+            "Normalmente inversa": {"K": 0.14, "alpha": 0.02},
+            "Muito inversa": {"K": 13.5, "alpha": 1.0},
+            "Extremamente inversa": {"K": 80.0, "alpha": 2.0},
+            "Inversa longa": {"K": 120.0, "alpha": 1.0},
+            "Inversa curta": {"K": 0.05, "alpha": 0.04},
+        }
+        return tabela.get(c_tipo_neutro, {"K": 80.0, "alpha": 2.0})
+    elif n_tipo_neutro == "IEEE-ANSI":
+        tabela = {
+            "Moderadamente inversa": {"K": 0.0515, "alpha": 0.02, "L": 0.1140},
+            "Muito inversa": {"K": 19.61, "alpha": 2.0, "L": 0.491},
+            "Extremamente inversa": {"K": 28.2, "alpha": 2.0, "L": 0.1217},
+        }
+        return tabela.get(c_tipo_neutro, {"K": 0.0515, "alpha": 0.02, "L": 0.1140})
+    elif n_tipo_neutro == "Personalizada":
+# Proteção caso ocorra algum valor inválido na sessão
+        try:
+            k_val_neutro = float(st.session_state.get("k_input_user_ieee", 0.0515))
+            alpha_val_neutro = float(st.session_state.get("alpha_input_user_ieee", 2.0))
+            l_val_neutro = float(st.session_state.get("l_input_user_ieee", 0.1217))
+        except (ValueError, TypeError):
+            k_val_neutro, alpha_val_neutro, l_val_neutro = 0.0515, 2.0, 0.1217
+        return {"K": k_val_neutro, "alpha": alpha_val_neutro, "L": l_val_neutro}
+    return{}
+
+def calcular_teorico_geral_neutro(i_prim_neutro, n_tipo_neutro, c_tipo_neutro, p_51_neutro, tms_neutro, p_50_neutro, t_inst_neutro):
+    if i_prim_neutro >= p_50_neutro:
+        return t_inst_neutro
+    p51_calc_neutro = max(p_51_neutro, 0.001)
+    if n_tipo_neutro == "IEC-60255":
+        if i_prim_neutro <= p51_calc_neutro:
+            return np.nan
+        p_neutro = get_parametros_norma_dict_neutro(n_tipo_neutro, c_tipo_neutro)
+        return tms_neutro * (p_neutro["K"] / (((i_prim_neutro / p51_calc_neutro) ** p_neutro["alpha"]) - 1))
+    elif n_tipo_neutro in ["IEEE-ANSI"]:
+        if i_prim_neutro < 1.1 * p51_calc_neutro:
+            return np.nan
+        m_neutro = i_prim_neutro / p51_calc_neutro
+        if m_neutro > 20.0: m_neutro = 20.0
+        p_neutro = get_parametros_norma_dict_neutro(n_tipo_neutro, c_tipo_neutro)
+        return tms_neutro * ((p_neutro["K"] / ((m_neutro**p_neutro["alpha"]) - 1)) + p_neutro["L"])
+    elif n_tipo_neutro in ["Personalizada"]:
+        if i_prim_neutro <= p51_calc_neutro:  # Garante o comportamento IEC se L=0 (atua logo acima de Ip)
+            return np.nan         
+        m_neutro = i_prim_neutro / p51_calc_neutro         
+        p_neutro = get_parametros_norma_dict_neutro(n_tipo_neutro, c_tipo_neutro)
+        return tms_neutro * ((p_neutro["K"] / ((m_neutro**p_neutro["alpha"]) - 1)) + p_neutro["L"])
+    else:
+        if i_prim_neutro <= p51_calc_neutro:
+            return np.nan
+        m_neutro = i_prim_neutro / p51_calc_neutro
+        if c_tipo_neutro == "I x T":
+            return (60 / m_neutro) * tms_neutro
+        else:
+            return (540 / (m_neutro**2)) * tms_neutro
+
 # ==========================================
 # FUNÇÃO DE GERAÇÃO DO RELATÓRIO PDF EM MEMÓRIA
 # ==========================================
@@ -1380,7 +1744,7 @@ def gerar_pdf_relatorio():
     story.append(Spacer(1, 8))
 
     # ==========================================
-    # RESPONSÁVEL PELO ENSAIO
+    # RESPONSÁVEL TÉCNICO PELO ENSAIO (USUÁRIO)
     # ==========================================
     nome_responsavel = st.session_state.get("usuario_logado", "")
     crea_responsavel = st.session_state.get("crea_usuario", "")
@@ -1388,7 +1752,7 @@ def gerar_pdf_relatorio():
     empresa_responsavel = st.session_state.get("empresa_usuario", "")
 
     story.append(Spacer(1, 18))
-    story.append(Paragraph("Responsável pelo Ensaio", heading_style))
+    story.append(Paragraph("Responsável Técnico", heading_style))
 
     responsavel_data = [
         [
@@ -1793,18 +2157,37 @@ with col_info:
     )
 
 #Identificação do relé de proteção
+st.markdown("""
+    <div class="titulo-principal-rele">
+        <div class="bloco-verde-rele"></div>
+        <div class="bloco-cinza-rele"></div>
+        <div class="texto-centralizado-rele">Equipamento de Proteção</div>
+    </div>
+    """, unsafe_allow_html=True
+)
+               
+def funcao_remover_equipamento():  
+    st.write("---")
+    # Botão de remoção individual mantido para a lógica continuar funcionando
+    col_vazia, col_del = st.columns([4, 1])
+    with col_del:
+        if st.button("🗑️ Remover", key=f"del_{uid}", use_container_width=True):
+            st.session_state.lista_uids.remove(uid)
+            st.rerun()
+
+
 
 st.markdown("""
     <div class="secao-rele">
-        <span class="icone">⚙</span>
-        <span class="titulo">Identificação do Relé de Proteção</span>
-        <span class="tag">ID Relé</span>
+        <span class="icone-rele">⚙</span>
+        <span class="titulo-rele">Identificação do Equipamento de Proteção</span>
+        <span class="tag-rele">ID do Equipamento</span>
     </div>
     """, unsafe_allow_html=True)
 
 st.markdown("""
     <style>
-    .stTextInput label, .stPasswordInput label {
+    .stTextInput label, stDateInput label,.stPasswordInput label {
         color: #ffffff !important;
         font-size: 15px !important;
         font-weight: 500 !important;
@@ -1823,9 +2206,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Linha 1 — Identificação do relé
-col1, col2, col3 = st.columns([1.5, 1.5, 1])
-
 st.markdown("""
 <style>
 div[data-testid="stTextInput"] input[aria-label="Modelo do Relé"]::placeholder,
@@ -1834,34 +2214,199 @@ div[data-testid="stTextInput"] input[aria-label="Nº de Série"]::placeholder,
 div[data-testid="stTextInput"] input[aria-label="ID do Equipamento"]::placeholder,
 div[data-testid="stTextInput"] input[aria-label="Solicitante"]::placeholder,
 div[data-testid="stTextInput"] input[aria-label="Local do Serviço"]::placeholder,
+div[data-testid="stTextInput"] input[aria-label="Nome ou ID (Profissional)"]::placeholder,
 div[data-testid="stTextInput"] input[aria-label="O/A"]::placeholder,
 div[data-testid="stTextInput"] input[aria-label="O/S"]::placeholder,
-div[data-testid="stTextInput"] input[aria-label="Data"]::placeholder {
-    color: #787777 !important;
+div[data-testid="stTextInput"] input[aria-label="Data do Ensaio"]::placeholder {
+color: #787777 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-with col1:
-    st.text_input(
-        "Modelo do Relé",
-        key="rele",
-        placeholder="Ex.: URP6000-5/6001-5"
-    )
+# 1. Inicializa o controle de UIDs
+if 'lista_uids' not in st.session_state:
+    st.session_state.lista_uids = [1]
+    st.session_state.next_uid = 2
+if 'equipamentos' not in st.session_state:
+    st.session_state.equipamentos = {}
 
-with col2:
-    st.text_input(
-        "Fabricante",
-        key="fabricante",
-        placeholder="Ex.: Pextron"
-    )
+num_equipamentos = len(st.session_state.lista_uids)
 
-with col3:
-    st.text_input(
-        "Nº de Série",
-        key="n_serie",
-        placeholder="Nº de série"
-    )
+if num_equipamentos == 0:
+    st.warning("Nenhum equipamento configurado. Adicione abaixo.")
+    # Adicionada a key="add_vazio"
+    if st.button("➕", key="add_vazio"):
+        st.session_state.lista_uids.append(st.session_state.next_uid)
+        st.session_state.next_uid += 1
+        st.rerun()
+    st.stop()
+
+# 2. Criação do layout dinâmico (Botão alinhado à direita das abas)
+peso_abas = 10
+peso_botao = 1  # O botão terá um peso pequeno e fixo
+peso_vazio = 10 # Coluna fantasma para empurrar tudo para a esquerda
+
+# Criamos três colunas em vez de duas
+col_abas, col_botao, col_vazia = st.columns([peso_abas, peso_botao, peso_vazio])
+
+with col_botao:
+    st.markdown("<div style='margin-top: 5px;'></div>", unsafe_allow_html=True)
+    
+    # Adicionada a key="add_principal"
+    if st.button("➕", key="add_principal"): 
+        st.session_state.lista_uids.append(st.session_state.next_uid)
+        st.session_state.next_uid += 1
+        st.rerun()
+
+with col_abas:
+    # ---------------------------------------------------------
+    # INTEGRAÇÃO: Lógica para renomear as abas dinamicamente
+    # ---------------------------------------------------------
+    nomes_abas = []
+    for i, uid in enumerate(st.session_state.lista_uids):
+        chave_tipo = f"tipo_equip_{uid}"
+        
+        # Verifica se o usuário já escolheu algo no selectbox para este equipamento
+        if chave_tipo in st.session_state:
+            tipo_selecionado = st.session_state[chave_tipo]
+            nomes_abas.append(f"{tipo_selecionado} {i+1}") 
+        else:
+            nomes_abas.append(f"Equipamento {i+1}")
+            
+    # Cria as abas usando a lista de nomes gerada acima
+    abas = st.tabs(nomes_abas)
+
+    # 3. Iteração para preencher o conteúdo de cada aba
+    for index, uid in enumerate(st.session_state.lista_uids):
+        with abas[index]:
+            
+            # OBRIGATÓRIO: O selectbox que dita o nome da aba. 
+            # Repare no key=f"tipo_equip_{uid}", ele que faz a mágica acontecer.
+            col_tipo, col_vazia = st.columns([1,2])
+        # Dicionário mapeando os equipamentos para os arquivos reais dentro da pasta 'imagens'
+        imagens_equipamentos = {
+            "Relé": "imagens/imagem_rele.png",
+            "Fusível HH": "imagens/fusivel_HH_imagem.png",
+            "Fusível NH": "imagens/nh_fusivel_imagem.png",
+            "Elo Fusível": "imagens/elo_fusivel_imagem.png",
+            "Religador Aut.": "imagens/religador_aut_imagem.png",
+            "Disj. BT": "imagens/disj_bt_imagem.png",
+            "Transformador": "imagens/trafo_imagem.png",
+            "Cabos e Condutores": "imagens/condutores_eletricos_imagem.png",
+            "Motores Elétricos": "imagens/motor_eletrico_imagem.png",
+            "Outro": (
+                "imagens/outros_eq_imagem.png"
+            ),   # Caso queira usar o relé como padrão para "Outro"
+        }
+
+        with col_tipo:
+            equipamento = st.selectbox(
+                "Tipo de Equipamento",
+                list(imagens_equipamentos.keys()),
+                key=f"tipo_equip_{uid}",
+        )
+
+        # Exibe a imagem correspondente ao equipamento escolhido logo abaixo do selectbox
+        if equipamento in imagens_equipamentos:
+            caminho_img = os.path.join(
+                diretorio_atual, imagens_equipamentos[equipamento]
+            )
+            if os.path.exists(caminho_img):
+                st.image(
+                    caminho_img, width=150
+                )  # Você pode ajustar a largura (width) se preferir
+                
+            #st.write("---")
+
+            if equipamento == "Relé":
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.text_input("Modelo do Relé", placeholder="Ex.: URP6000-5/6001-5", key=f"rele_mod_{uid}")
+                
+                with col2:
+                    st.selectbox("Fabricante", ["Pextron", "Siemens", "Schneider", "ABB", "Eaton", "SEL", "Outro"], key=f"rele_fab_{uid}")
+                
+                with col3:
+                    st.text_input("Nº de Série", placeholder="Nº de série", key=f"n_serie_{uid}")
+
+            elif equipamento == "Fusível HH":
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.selectbox("Fabricante", ["Siba", "SIEMENS", "Schneider", "Negrini", "Outro"], key=f"hh_fab_{uid}")
+                with col2:
+                    st.text_input("Modelo / Referência", placeholder="Ex.: 30 000 13", key=f"hh_mod_{uid}")
+                with col3:
+                    st.selectbox("Tensão Máxima (kV)", ["7.2", "15", "17.5", "24", "36", "Outra"], key=f"hh_tensao_{uid}")
+
+            elif equipamento == "Fusível NH":
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.selectbox("Fabricante", ["WEG", "Siemens", "Bussmann", "Steck", "Outro"], key=f"nh_fab_{uid}")
+                with col2:
+                    st.selectbox("Tamanho (Tamanho Base)", ["000", "00", "0", "1", "2", "3", "4"], key=f"nh_tam_{uid}")
+                with col3:
+                    st.selectbox("Classe de Operação", ["gG/gL (Uso Geral)", "aM (Motor)", "aR (Ultrarrápido)"], key=f"nh_classe_{uid}")
+
+            elif equipamento == "Elo Fusível":
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.selectbox("Fabricante", ["S&C", "Kearney", "Hubbell", "Cooper", "Outro"], key=f"elo_fab_{uid}")
+                with col2:
+                    st.selectbox("Tipo de Curva", ["K (Rápido)", "T (Lento)", "H (Alto Surto)", "Outro"], key=f"elo_tipo_{uid}")
+
+            elif equipamento == "Religador Aut.":
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.selectbox("Fabricante", ["Noja Power", "Siemens", "Schneider", "Cooper/Eaton", "Tavrida", "Outro"], key=f"relig_fab_{uid}")
+                with col2:
+                    st.text_input("Modelo do Controlador", placeholder="Ex.: RC10, Form 6, SEL-651R", key=f"relig_mod_{uid}")
+
+            elif equipamento == "Disj. BT":
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.selectbox("Fabricante", ["Schneider", "ABB", "Siemens", "WEG", "Eaton", "Outro"], key=f"djbt_fab_{uid}")
+                with col2:
+                    st.selectbox("Tipo Construtivo", ["Caixa Moldada (MCCB)", "Aberto (ACB)", "Miniatura (DIN/MCB)"], key=f"djbt_tipo_{uid}")
+                with col3:
+                    st.text_input("Família / Modelo", placeholder="Ex.: Compact NSX, Emax 2", key=f"djbt_mod_{uid}")
+
+            elif equipamento == "Transformador":
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.number_input("Potência Nominal (kVA)", min_value=0.0, value=500.0, step=50.0, key=f"trafo_pot_{uid}")
+                with col2:
+                    st.text_input("Tensão Primária (kV)", placeholder="Ex.: 13.8", key=f"trafo_vpri_{uid}")
+                with col3:
+                    st.text_input("Tensão Secundária (V)", placeholder="Ex.: 380/220", key=f"trafo_vsec_{uid}")
+
+            elif equipamento == "Cabos e Condutores":
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.selectbox("Material do Condutor", ["Cobre (Cu)", "Alumínio (Al)"], key=f"cabo_mat_{uid}")
+                with col2:
+                    st.selectbox("Isolação", ["EPR", "XLPE", "PVC", "Nu (Sem Isolação)"], key=f"cabo_iso_{uid}")
+                with col3:
+                    st.number_input("Seção Transversal (mm²)", min_value=0.0, value=50.0, step=10.0, key=f"cabo_bitola_{uid}")
+
+            elif equipamento == "Motores Elétricos":
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.number_input("Potência Nominal (cv)", min_value=0.0, value=100.0, step=10.0, key=f"mot_pot_{uid}")
+                with col2:
+                    st.text_input("Tensão Nominal (V)", placeholder="Ex.: 380", key=f"mot_tensao_{uid}")
+                with col3:
+                    st.selectbox("Número de Polos", ["2 polos (~3600 rpm)", "4 polos (~1800 rpm)", "6 polos (~1200 rpm)", "8 polos (~900 rpm)"], key=f"mot_polos_{uid}")
+
+            elif equipamento == "Outro":
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.text_input("Descrição do Equipamento", placeholder="Ex.: Chave Seccionadora", key=f"outro_desc_{uid}")
+                with col2:
+                    st.text_input("Fabricante / Modelo", placeholder="Opcional", key=f"outro_fab_{uid}")
+
+col1, col2, col3 = st.columns([1.5, 1.5, 1])
+
 
 # Linha 2 — Identificação da instalação
 col1, col2, col3 = st.columns([1, 1.5, 2])
@@ -1888,126 +2433,47 @@ with col3:
     )
 
 # Linha 3 — Dados da ordem
-col1, col2, col3 = st.columns([1, 1, 0.6])
+col1, col2, col3, col4 = st.columns([0.75, 0.75, 0.75, 0.6])
 
 with col1:
+    st.text_input(
+        "Nome ou ID (Profissional)", 
+        key="prof_ensaio", 
+        placeholder="(Opcional)"
+    )
+
+with col2:
     st.text_input(
         "O/A",
         key="oa",
         placeholder="Ordem de Ajuste"
     )
 
-with col2:
+with col3:
     st.text_input(
         "O/S",
         key="os_ensaio",
         placeholder="Ordem de Serviço"
     )
 
-with col3:
-    st.text_input(
-        "Data",
-        key="data_ensaio",
-        placeholder="dd/mm/aaaa"
+with col4:
+    data_ensaio = st.date_input(
+        "Data do Ensaio", value="today", min_value=None, max_value=None, 
+        help="Insira ou selecione a data em que o ensaio foi realizado (DD/MM/AAAA)", key="data_ensiao",
+        format="DD/MM/YYYY"
     )
-
-
-st.markdown("""
-<style>
-
-    /* ==============================
-       FUNDO GERAL
-       ============================== */
-    .stApp {
-        background-color: #F5F7FA;
-    }
-
-    /* ==============================
-       TÍTULO PRINCIPAL
-       ============================== */
-    .titulo-principal {
-        background: linear-gradient(135deg, #C8102E, #A5001C);
-        color: white;
-        padding: 16px 20px;
-        border-radius: 10px;
-        text-align: center;
-        font-size: 25px;
-        font-weight: 700;
-        border: 1px solid #8E0018;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-        margin-bottom: 6px;
-    }
-
-    /* ==============================
-       SUBTÍTULO
-       ============================== */
-    .subtitulo {
-        color: #5F6B7A;
-        text-align: center;
-        font-size: 14px;
-        margin-top: 4px;
-        margin-bottom: 25px;
-    }
-
-    /* ==============================
-       TÍTULO DAS SEÇÕES
-       ============================== */
-    .secao-titulo {
-        color: #263238;
-        font-size: 17px;
-        font-weight: 700;
-        padding-bottom: 8px;
-        margin-bottom: 12px;
-        border-bottom: 2px solid #D20A2E;
-    }
-
-    /* ==============================
-       CARD DOS PARÂMETROS
-       ============================== */
-    .painel-config {
-        background-color: white;
-        padding: 20px 20px 10px 20px;
-        border-radius: 12px;
-        border: 1px solid #E1E5EA;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-
-    /* ==============================
-       LABELS DOS INPUTS
-       ============================== */
-    label {
-        font-weight: 600 !important;
-        color: #37474F !important;
-    }
-
-    /* ==============================
-       SELECTBOX / INPUTS
-       ============================== */
-    div[data-baseweb="select"] > div {
-        border-radius: 7px;
-        border: 1px solid #D8DDE3;
-    }
-
-    /* ==============================
-       ESPAÇAMENTO
-       ============================== */
-    .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 2rem;
-    }
-
-</style>
-""", unsafe_allow_html=True)
 
 # ==========================================
 # CABEÇALHO
 # ==========================================
 
-st.markdown(
-    '<div class="titulo-principal">Ensaio de Curva ANSI (50/51)</div>',
-    unsafe_allow_html=True
+st.markdown("""
+    <div class="titulo-principal-curvas">
+        <div class="bloco-vermelho-curvas"></div>
+        <div class="bloco-azul-curvas"></div>
+        <div class="texto-centralizado-curvas">Ensaio de Curva ANSI (50/50N/51/51N)</div>
+    </div>
+    """, unsafe_allow_html=True
 )
 
 st.markdown(
@@ -2018,290 +2484,612 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-# ==========================================
-# 5. PAINEL DE CONFIGURAÇÕES FASE
-# ==========================================
-st.markdown("""
-    <div class="secao-protecao_fase">
-        <span class="icone">⚙</span>
-        <span class="titulo">Configuração da Unidade Temporizada (51)</span>
-        <span class="tag">Curva de Fase</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-/* Força os rótulos de TODOS os tipos de inputs a ficarem com branco puro */
-.stTextInput label, 
-.stPasswordInput label, 
-.stSelectbox label, 
-.stNumberInput label {
-    color: #ffffff !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-}
-
-/* Fundo translúcido para os inputs de texto e números */
-div[data-baseweb="input"], div[data-baseweb="select"] {
-    background-color: rgba(255,255,255,0.10) !important;
-    border-radius: 10px !important;
-}
-
-/* Texto selecionado do selectbox */
-div[data-baseweb="select"] span {
-    color: var(--text-color) !important;
-    font-size: 16px !important;
-}
-
-
-/* Texto das opções abertas */
-ul[role="listbox"] li {
-    color: var(--text-color) !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-col_norma, col1, col2, col3, col4, col5 = st.columns(6)
-
-with col_norma:
-  norma_tipo = st.selectbox(
-      "NORMA",
-      ["IEC-60255", "IEEE-ANSI", "Proteção de Máquinas Térmicas", "Personalizada"],
-      key="norma_tipo",
-  )
-
-with col1:
-  partida_51 = st.number_input(
-      "PARTIDA 51 - fase (A PRIM.)", min_value=0.0, step=0.5, key="partida_51", placeholder="Digite um valor de corrente (A)"
-  )
-
-with col2:
-  if norma_tipo == "IEC-60255":
-    curva_tipo = st.selectbox(
-        "CURVA",
-        ["Normalmente inversa", "Muito inversa", "Extremamente inversa", "Inversa longa", "Inversa curta"],
-        key="curva_tipo_iec"
-    )
- 
-  elif norma_tipo == "IEEE-ANSI":
-    curva_tipo = st.selectbox(
-        "CURVA",
-        ["Moderadamente inversa", "Muito inversa", "Extremamente inversa"],
-        key="curva_tipo_ieee"
-    )
-     
-  elif norma_tipo == "Proteção de Máquinas Térmicas":
-    curva_tipo = st.selectbox(
-        "CURVA",
-        ["I x T", "I² x T"],
-        key="curva_tipo_outras"
-    )
-
-  else:
-    curva_tipo = st.selectbox(
-            "CURVA", ["Personalizada"], key="curva_personalizada")
-with col3:
-  dial_tms = st.number_input(
-      "DIAL ($T_{ms}$)", min_value=0.01, max_value=10.0, step=0.01, key="dial_tms"
-  )
-
-with col4:
-  opcoes_rtc = ["100 / 5", "150 / 5", "200 / 5", "300 / 5", "400 / 5", "600 / 5", "800 / 5", "Personalizado (Digitar)"]
-  rtc_selecionado = st.selectbox("RTC", opcoes_rtc, key="rtc_selectbox")
-  
-  if rtc_selecionado == "Personalizado (Digitar)":
-    rtc_str = st.text_input("Digite o RTC:", key="rtc_str_input")
-  else:
-    rtc_str = rtc_selecionado
-
-with col5:
-  tolerancia = st.number_input(
-      "TOLERÂNCIA (±%)", min_value=0.1, max_value=20.0, step=0.5, key="tolerancia"
-  )
-
-if norma_tipo == "Personalizada":
-    st.markdown("---") # Linha sutil para separar visualmente
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
-    with sub_col1:
-        k_user_str = st.number_input("Digite a Constante K (IEEE):", min_value=0.01, max_value=100.0, value=0.0515, step=0.01, key="k_input_user_ieee")
-    with sub_col2:
-        alpha_user_str = st.number_input("Digite a Constante α (IEEE):", min_value=0.02, max_value=3.0, value=2.0, step=0.1, key="alpha_input_user_ieee")
-    with sub_col3:
-        L_user_str = st.number_input("Digite a Constante L (IEEE):", min_value=0.0, max_value=1.0, value=0.1217, step=0.1, key="l_input_user_ieee")
-
-# ==========================================
-# 6. CONFIGURAÇÃO DA UNIDADE INSTANTÂNEA (50)
-# ==========================================
-st.markdown("""
-    <div class="secao-protecao_fase">
-        <span class="icone">⚙</span>
-        <span class="titulo">Configuração da Unidade Instantânea (50)</span>
-        <span class="tag">Curva de Fase</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-c_inst1, c_inst2, c_inst3 = st.columns(3)
-
-with c_inst1:
-  criterio_50 = st.selectbox(
-      "CRITÉRIO DE AJUSTE (50)",
-      ["Manual Direto", "Corrente Transitória / Inrush (Ip = k * Itran)", "Curto-Circuitos Bifásicos (Ip = k * Icc2F)"],
-      key="criterio_50"
-  )
-
-with c_inst2:
-  if "Transitória" in criterio_50:
-    itran = st.number_input("Corrente Transitória / Inrush (A)", min_value=0.0, value=120.0, step=5.0)
-    k_fator = st.number_input("Fator k (1,05 a 1,3)", min_value=1.0, max_value=2.0, value=1.2, step=0.05)
-    partida_50 = itran * k_fator
-    st.info(f"Partida 50 calculada: **{partida_50:.1f} A**")
-  elif "Bifásico" in criterio_50:
-    icc2f = st.number_input("Corrente de Curto Bifásico - Icc2F (A)", min_value=0.0, value=250.0, step=10.0)
-    k_fator = st.number_input("Fator k (< 0,8)", min_value=0.1, max_value=1.0, value=0.75, step=0.05)
-    partida_50 = icc2f * k_fator
-    st.info(f"Partida 50 calculada: **{partida_50:.1f} A**")
-  else:
-    partida_50 = st.number_input("PARTIDA 50 MANUAL (A PRIM.)", min_value=0.0, step=5.0, key="partida_50_manual", placeholder="Digite um valor de corrente (A)")
-
-with c_inst3:
-  tempo_instantaneo = st.number_input("TEMPO DE ATUAÇÃO 50 (s)", min_value=0.0, max_value=1.0, value=0.0, step=0.005, format="%.3f", key="tempo_instantaneo", placeholder="Digite um valor de tempo (s)")
-
-# Parâmetros ativos atuais da tela
-n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, tol_Ativo, t_inst_Ativo, crit_50_Ativo, p_50_man_Ativo, rtc_str_Ativo, rel_tc_Ativo = get_parametros_sessao()
-p_50_Ativo = p_50_man_Ativo
-
-# ==========================================
-# 9. GERENCIAMENTO DOS PONTOS DE ENSAIO
-# ==========================================
-st.markdown("""
-    <div class="secao-protecao_fase">
-        <span class="icone">⚙</span>
-        <span class="titulo">Painel de Controle dos Pontos de Ensaio</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-with st.form("form_add_ponto", clear_on_submit=True):
-  col_f1, col_f2, col_f3, col_f4 = st.columns([1, 2, 2, 1])
-  with col_f1:
-    novo_id = st.text_input("ID", value=f"I{len(st.session_state.pontos_ensaio)+1}")
-  with col_f2:
-    novo_iprim = st.number_input("Corrente Primária (A)", min_value=0.0, value=0.0, step=0.5, placeholder="Digite um valor de corrente (A)")
-  with col_f3:
-    novo_treal = st.number_input("Tempo Real (s)", min_value=0.0
-                                 , value=0.0, step=0.001, format="%.3f", placeholder="Digite um valor de tempo (s)")
-  with col_f4:
-    st.markdown("<br>", unsafe_allow_html=True)
-    btnAdd = st.form_submit_button("Adicionar Ponto")
-
-  if btnAdd:
-    st.session_state.pontos_ensaio.append({
-        "id": novo_id,
-        "iprim": novo_iprim,
-        "treal": novo_treal,
-    })
-    st.rerun()
-
-st.markdown("""
-    <div class="secao-protecao_fase">
-        <span class="icone">⚙</span>
-        <span class="titulo">Relatório de Resultados e Erro Relativo</span>
-    </div>
-    """, unsafe_allow_html=True)
+aba_fase, aba_neutro = st.tabs(["Fase (50/51)", "Neutro (50N/51N)"])
 
 st.markdown(
-    '<p style="color: #FFFFFF;">Abaixo estão listados todos os pontos ativos do ensaio com cálculo dinâmico imediato. (🟥 - Teste Reprovado e 🟩 - Teste Aprovado)</p>',
+    """
+    <style>
+        /* Altera o fundo do botão de envio do formulário para Verde */
+        div.stFormSubmitButton > button {
+            background-color: #28a745 !important; /* Verde principal */
+            color: white !important;
+            border: none !important;
+            font-weight: bold;
+        }
+        
+        /* Cor do botão quando o rato passa por cima (hover) */
+        div.stFormSubmitButton > button:hover {
+            background-color: #218838 !important; /* Verde mais escuro */
+            color: white !important;
+            border: none !important;
+        }
+    </style>
+    """,
     unsafe_allow_html=True,
 )
 
-h1, h2, h3, h4, h5, h6, h7 = st.columns([1, 2, 2, 2, 2, 2, 1])
-with h1: st.markdown("<div class='titulo-tabela'>n°</div>", unsafe_allow_html=True)
-with h2: st.markdown("<div class='titulo-tabela'>Corrente Primária (A)</div>", unsafe_allow_html=True)
-with h3: st.markdown("<div class='titulo-tabela'>Corrente Secundária (A)</div>", unsafe_allow_html=True)
-with h4: st.markdown("<div class='titulo-tabela'>Tempo Teórico</div>", unsafe_allow_html=True)
-with h5: st.markdown("<div class='titulo-tabela'>Tempo Real (s)</div>", unsafe_allow_html=True)
-with h6: st.markdown("<div class='titulo-tabela'>Erro (%)</div>", unsafe_allow_html=True)
-with h7: st.markdown("<div class='titulo-tabela'>Apagar</div>", unsafe_allow_html=True)
-linhas_processadas = []
-indices_para_remover = []
+# ==========================================
+# 5. PAINEL DE CONFIGURAÇÕES FASE (51)
+# ==========================================
+with aba_fase:
+    st.markdown("""
+    <div style="background-color: #C8102E; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+        ⚙ Painel de Controle e Ensaios - Proteção de Fase (50/51)
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("""
+        <div class="secao-protecao_fase">
+            <span class="icone">⚙</span>
+            <span class="titulo">Configuração da Unidade Temporizada (51)</span>
+            <span class="tag">Curva de Fase</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-for idx, p in enumerate(st.session_state.pontos_ensaio):
-  col_r1, col_r2, col_r3, col_r4, col_r5, col_r6, col_r7 = st.columns([1, 2, 2, 2, 2, 2, 1])
+    st.markdown("""
+    <style>
+    .stTextInput label, 
+    .stPasswordInput label, 
+    .stSelectbox label, 
+    .stNumberInput label,
+    .stDateInput label {
+        color: #ffffff !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+    }
 
-  with col_r1:
-    #st.text(p["id"])
-    st.markdown(f"<div class='titulo-tabela'>{p['id']}</div>", unsafe_allow_html=True)
-  with col_r2:
-    iprim_val = st.number_input(
-        f"Primária {idx}",
-        min_value=0.0,
-        value=float(p["iprim"]),
-        step=1.0,
-        key=f"iprim_{idx}",
-        label_visibility="collapsed",
+    /* Fundo translúcido para os inputs de texto e números */
+    div[data-baseweb="input"], div[data-baseweb="select"] {
+        background-color: rgba(255,255,255,0.10) !important;
+        border-radius: 10px !important;
+    }
+
+    /* Texto selecionado do selectbox */
+    div[data-baseweb="select"] span {
+        color: var(--text-color) !important;
+        font-size: 16px !important;
+    }
+
+
+    /* Texto das opções abertas */
+    ul[role="listbox"] li {
+        color: var(--text-color) !important;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
+
+    col_norma, col1, col2, col3, col4, col5 = st.columns(6)
+
+    with col_norma:
+        norma_tipo = st.selectbox(
+        "NORMA",
+        ["IEC-60255", "IEEE-ANSI", "Proteção de Máquinas Térmicas", "Personalizada"],
+        key="norma_tipo",
     )
-  with col_r3:
-    i_sec = iprim_val / rel_tc_Ativo
-    #st.text(f"{i_sec:.2f} A")
-    st.markdown(f'<div class="titulo-tabela">{i_sec:.2f} A</span>', unsafe_allow_html=True)
-  with col_r4:
-    t_teorico = calcular_teorico_geral(iprim_val, n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, p_50_Ativo, t_inst_Ativo)
-    if pd.isna(t_teorico) or t_teorico == 0:
-      t_teorico_str = "Infinito"
+
+    with col1:
+        partida_51 = st.number_input(
+        "PARTIDA 51 - fase (A PRIM.)", min_value=0.0, step=0.5, key="partida_51", placeholder="Digite um valor de corrente (A)"
+    )
+
+    with col2:
+        if norma_tipo == "IEC-60255":
+            curva_tipo = st.selectbox(
+            "CURVA",
+            ["Normalmente inversa", "Muito inversa", "Extremamente inversa", "Inversa longa", "Inversa curta"],
+            key="curva_tipo_iec"
+        )
+    
+        elif norma_tipo == "IEEE-ANSI":
+            curva_tipo = st.selectbox(
+            "CURVA",
+            ["Moderadamente inversa", "Muito inversa", "Extremamente inversa"],
+            key="curva_tipo_ieee"
+        )
+        
+        elif norma_tipo == "Proteção de Máquinas Térmicas":
+            curva_tipo = st.selectbox(
+            "CURVA",
+            ["I x T", "I² x T"],
+            key="curva_tipo_outras"
+        )
+
+        else:
+            curva_tipo = st.selectbox(
+                "CURVA", ["Personalizada"], key="curva_personalizada")
+    with col3:
+        dial_tms = st.number_input(
+        "DIAL ($T_{ms}$)", min_value=0.01, max_value=10.0, step=0.01, key="dial_tms"
+    )
+
+    with col4:
+        opcoes_rtc = ["100 / 5", "150 / 5", "200 / 5", "300 / 5", "400 / 5", "600 / 5", "800 / 5", "Personalizado (Digitar)"]
+        rtc_selecionado = st.selectbox("RTC", opcoes_rtc, key="rtc_selectbox")
+    
+    if rtc_selecionado == "Personalizado (Digitar)":
+        rtc_str = st.text_input("Digite o RTC:", key="rtc_str_input")
     else:
-      t_teorico_str = f"{t_teorico:.3f} s"
-    #st.text(t_teorico_str)
-    st.markdown(f'<div class="titulo-tabela">{t_teorico_str}</span>', unsafe_allow_html=True)
+        rtc_str = rtc_selecionado
 
-
-  with col_r5:
-    treal_val = st.number_input(
-        f"Real {idx}",
-        min_value=0.0,
-        value=float(p["treal"]),
-        step=0.001,
-        format="%.3f",
-        key=f"treal_{idx}",
-        label_visibility="collapsed",
+    with col5:
+        tolerancia = st.number_input(
+        "TOLERÂNCIA (±%)", min_value=0.1, max_value=20.0, step=0.5, key="tolerancia"
     )
 
-  if pd.isna(t_teorico) or t_teorico == 0:
-    erro = 0.0
-    status = "Fora da curva"
-    cor_fundo = "#f8f9fa"
-  else:
-    erro = ((treal_val - t_teorico) / t_teorico) * 100
-    status = "Aprovado" if abs(erro) <= tol_Ativo else "Reprovado"
-    cor_fundo = "#22de8a" if abs(erro) <= tol_Ativo else "#eb2a3a"
+    if norma_tipo == "Personalizada":
+        st.markdown("---") # Linha sutil para separar visualmente
+        sub_col1, sub_col2, sub_col3 = st.columns(3)
+        with sub_col1:
+            k_user_str = st.number_input("Digite a Constante K (IEEE):", min_value=0.01, max_value=100.0, value=0.0515, step=0.01, key="k_input_user_ieee")
+        with sub_col2:
+            alpha_user_str = st.number_input("Digite a Constante α (IEEE):", min_value=0.02, max_value=3.0, value=2.0, step=0.1, key="alpha_input_user_ieee")
+        with sub_col3:
+            L_user_str = st.number_input("Digite a Constante L (IEEE):", min_value=0.0, max_value=1.0, value=0.1217, step=0.1, key="l_input_user_ieee")
 
-  with col_r6:
+    # ==========================================
+    # 6. CONFIGURAÇÃO DA UNIDADE INSTANTÂNEA (50)
+    # ==========================================
+    st.markdown("""
+        <div class="secao-protecao_fase">
+            <span class="icone">⚙</span>
+            <span class="titulo">Configuração da Unidade Instantânea (50)</span>
+            <span class="tag">Curva de Fase</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    c_inst1, c_inst2, c_inst3 = st.columns(3)
+
+    with c_inst1:
+        criterio_50 = st.selectbox(
+        "CRITÉRIO DE AJUSTE (50)",
+        ["Manual Direto"],
+        key="criterio_50"
+    )
+
+    with c_inst2:
+    #if "Transitória" in criterio_50:
+        #itran = st.number_input("Corrente Transitória / Inrush (A)", min_value=0.0, value=120.0, step=5.0)
+        #k_fator = st.number_input("Fator k (1,05 a 1,3)", min_value=1.0, max_value=2.0, value=1.2, step=0.05)
+        #partida_50 = itran * k_fator
+        #st.info(f"Partida 50 calculada: **{partida_50:.1f} A**")
+    #elif "Bifásico" in criterio_50:
+        #icc2f = st.number_input("Corrente de Curto Bifásico - Icc2F (A)", min_value=0.0, value=250.0, step=10.0)
+        #k_fator = st.number_input("Fator k (< 0,8)", min_value=0.1, max_value=1.0, value=0.75, step=0.05)
+        #partida_50 = icc2f * k_fator
+        #st.info(f"Partida 50 calculada: **{partida_50:.1f} A**")
+    #else:
+        partida_50 = st.number_input("PARTIDA 50 MANUAL (A PRIM.)", min_value=0.0, step=5.0, key="partida_50_manual", placeholder="Digite um valor de corrente (A)")
+
+    with c_inst3:
+        tempo_instantaneo = st.number_input("TEMPO DE ATUAÇÃO 50 (s)", min_value=0.0, max_value=1.0, value=0.0, step=0.005, format="%.3f", key="tempo_instantaneo", placeholder="Digite um valor de tempo (s)")
+
+    # Parâmetros ativos atuais da tela
+    n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, tol_Ativo, t_inst_Ativo, crit_50_Ativo, p_50_man_Ativo, rtc_str_Ativo, rel_tc_Ativo = get_parametros_sessao()
+    p_50_Ativo = p_50_man_Ativo
+
     st.markdown(
-        f"<div style='background-color: {cor_fundo}; padding: 5px; border-radius: 4px; text-align: center; font-weight: bold; color: #000;' title='Status: {status}'>{erro:+.1f}%</div>",
+        """
+        <div class="secao-protecao_fase">
+            <span class="icone">⚙</span>
+            <span class="titulo">Inserir medições de Fase (50/51)</span>
+            <span class="tag">Curva de Fase</span>
+        </div>
+    """,
         unsafe_allow_html=True,
     )
 
-  with col_r7:
-    if st.button("🗑️", key=f"del_{idx}"):
-      indices_para_remover.append(idx)
+    with st.form("form_add_ponto_fase", clear_on_submit=True):
+        col_f1, col_f2, col_f3, col_f4 = st.columns([1, 2, 2, 1])
+        with col_f1:
+            novo_id = st.text_input("ID", value=f"I{len(st.session_state.pontos_ensaio)+1}")
+        with col_f2:
+            novo_iprim = st.number_input("Corrente Primária Fase (A)", min_value=0.0, value=0.0, step=0.5, placeholder="Digite um valor de corrente (A)")
+        with col_f3:
+            novo_treal = st.number_input("Tempo Medido (s)", min_value=0.0, value=0.0, step=0.001, format="%.3f", placeholder="Digite um valor de tempo (s)")
+        with col_f4:
+            st.markdown("<br>", unsafe_allow_html=True)
+            #btnAdd = st.form_submit_button("Adicionar Ponto")
+            btnAdd_fase = st.form_submit_button("Adicionar Ponto")
 
-  st.session_state.pontos_ensaio[idx]["iprim"] = iprim_val
-  st.session_state.pontos_ensaio[idx]["treal"] = treal_val
+        if btnAdd_fase:
+            ids_existentes = [p["id"] for p in st.session_state.pontos_ensaio]
+            if novo_id in ids_existentes:
+                st.warning(f"⚠️ O ID '{novo_id}' já existe na tabela. Por favor, utilize um ID diferente.")
+            elif not re.match(r"^I\d+$", novo_id):
+                st.warning("⚠️ O ID deve seguir obrigatoriamente o formato da letra 'I' seguida de número (Ex: I1, I2, ..., In).")
+            else:
+                if novo_iprim > 0:
+                    st.session_state.pontos_ensaio.append({
+                        "id": novo_id,
+                        "iprim": novo_iprim,
+                        "treal": novo_treal,
+                    })
+                    st.rerun()
+                elif novo_iprim < 0:
+                    st.warning("⚠️ Insira o módulo da Corrente Primária.") 
+                else:
+                    st.warning("⚠️ Insira um valor de Corrente Primária maior que zero.")
 
-  linhas_processadas.append({
-      "Ponto": p["id"],
-      "Corrente Primária (A)": iprim_val,
-      "Tempo Teórico Num": t_teorico,
-      "Tempo Real (s)": treal_val,
-  })
+    st.markdown("""
+        <div class="secao-protecao_fase">
+            <span class="icone">⚙</span>
+            <span class="titulo">Relatório de Resultados e Erro Relativo</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-if indices_para_remover:
-  for i in sorted(indices_para_remover, reverse=True):
-    st.session_state.pontos_ensaio.pop(i)
-  st.rerun()
+    st.markdown(
+            '<p style="color: #FFFFFF;">Abaixo estão listados todos os pontos ativos do ensaio com cálculo dinâmico imediato. (🟥 - Teste Reprovado e 🟩 - Teste Aprovado)</p>',unsafe_allow_html=True)
 
-df_res = pd.DataFrame(linhas_processadas)
-st.markdown("---")
+    h1, h2, h3, h4, h5, h6, h7 = st.columns([1, 2, 2, 2, 2, 2, 1])
+    with h1: st.markdown("<div class='titulo-tabela'>n°</div>", unsafe_allow_html=True)
+    with h2: st.markdown("<div class='titulo-tabela'>Corrente Primária (A)</div>", unsafe_allow_html=True)
+    with h3: st.markdown("<div class='titulo-tabela'>Corrente Secundária (A)</div>", unsafe_allow_html=True)
+    with h4: st.markdown("<div class='titulo-tabela'>Tempo Teórico</div>", unsafe_allow_html=True)
+    with h5: st.markdown("<div class='titulo-tabela'>Tempo Real (s)</div>", unsafe_allow_html=True)
+    with h6: st.markdown("<div class='titulo-tabela'>Erro (%)</div>", unsafe_allow_html=True)
+    with h7: st.markdown("<div class='titulo-tabela'>Apagar</div>", unsafe_allow_html=True)
+    linhas_processadas = []
+    indices_para_remover = []
+
+    for idx, p in enumerate(st.session_state.pontos_ensaio):
+        col_r1, col_r2, col_r3, col_r4, col_r5, col_r6, col_r7 = st.columns([1, 2, 2, 2, 2, 2, 1])
+
+        with col_r1:
+            #st.text(p["id"])
+            st.markdown(f"<div class='titulo-tabela'>{p['id']}</div>", unsafe_allow_html=True)
+        with col_r2:
+            iprim_val = st.number_input(
+                f"Primária {idx}",
+                min_value=0.0,
+                value=float(p["iprim"]),
+                step=1.0,
+                key=f"iprim_{idx}",
+                label_visibility="collapsed",
+            )
+        with col_r3:
+            i_sec = iprim_val / rel_tc_Ativo
+            #st.text(f"{i_sec:.2f} A")
+            st.markdown(f'<div class="titulo-tabela">{i_sec:.2f} A</div>', unsafe_allow_html=True)
+        with col_r4:
+            t_teorico = calcular_teorico_geral(iprim_val, n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo, tms_Ativo, p_50_Ativo, t_inst_Ativo)
+            if pd.isna(t_teorico) or t_teorico == 0:
+                t_teorico_str = "Infinito"
+            else:
+                t_teorico_str = f"{t_teorico:.3f} s"
+            #st.text(t_teorico_str)
+            st.markdown(f'<div class="titulo-tabela">{t_teorico_str}</div>', unsafe_allow_html=True)
+
+        with col_r5:
+            treal_val = st.number_input(
+                f"Real {idx}",
+                min_value=0.0,
+                value=float(p["treal"]),
+                step=0.001,
+                format="%.3f",
+                key=f"treal_{idx}",
+                label_visibility="collapsed",
+            )
+
+        if pd.isna(t_teorico) or t_teorico == 0:
+            erro = 0.0
+            status = "Fora da curva"
+            cor_fundo = "#f8f9fa"
+        else:
+            erro = ((treal_val - t_teorico) / t_teorico) * 100
+            status = "Aprovado" if abs(erro) <= tol_Ativo else "Reprovado"
+            cor_fundo = "#22de8a" if abs(erro) <= tol_Ativo else "#eb2a3a"
+
+        with col_r6:
+            st.markdown(
+                f"<div style='background-color: {cor_fundo}; padding: 5px; border-radius: 4px; text-align: center; font-weight: bold; color: #000;' title='Status: {status}'>{erro:+.1f}%</div>",
+                unsafe_allow_html=True,
+            )
+
+        with col_r7:
+            if st.button("🗑️", key=f"del_{idx}"):
+                indices_para_remover.append(idx)
+
+        st.session_state.pontos_ensaio[idx]["iprim"] = iprim_val
+        st.session_state.pontos_ensaio[idx]["treal"] = treal_val
+
+        linhas_processadas.append({
+            "Ponto": p["id"],
+            "Corrente Primária (A)": iprim_val,
+            "Tempo Teórico Num": t_teorico,
+            "Tempo Real (s)": treal_val,
+        })
+
+    if indices_para_remover:
+        for i in sorted(indices_para_remover, reverse=True):
+            st.session_state.pontos_ensaio.pop(i)
+        st.rerun()
+
+    df_res = pd.DataFrame(linhas_processadas)
+    st.markdown("---")
+
+
+# ==========================================
+# 5. PAINEL DE CONFIGURAÇÕES NEUTRO (51N)
+# ==========================================
+with aba_neutro:
+    st.markdown("""
+        <div style="background-color: #0056b3; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+            ⚙ Painel de Controle e Ensaios - Proteção de Neutro (50N/51N)
+        </div>
+        """, unsafe_allow_html=True) 
+    st.markdown("""
+        <div class="secao-neutro">
+            <span class="icone-neutro">⚙</span>
+            <span class="titulo-neutro">Configuração da Unidade Temporizada (51N)</span>
+            <span class="tag-neutro">Curva de Neutro</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
+        <style>
+        .stTextInput label, 
+        .stPasswordInput label, 
+        .stSelectbox label, 
+        .stNumberInput label {
+            color: #ffffff !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+        }
+
+        /* Fundo translúcido para os inputs de texto e números */
+        div[data-baseweb="input"], div[data-baseweb="select"] {
+            background-color: rgba(255,255,255,0.10) !important;
+            border-radius: 10px !important;
+        }
+
+        /* Texto selecionado do selectbox */
+        div[data-baseweb="select"] span {
+            color: var(--text-color) !important;
+            font-size: 16px !important;
+        }
+
+
+        /* Texto das opções abertas */
+        ul[role="listbox"] li {
+            color: var(--text-color) !important;
+        }
+
+        </style>
+        """, unsafe_allow_html=True)
+
+    col1_neutro, col2_neutro, col3_neutro, col4_neutro, col5_neutro, col6_neutro = st.columns(6)
+
+    with col1_neutro:
+        norma_tipo_neutro = st.selectbox(
+        "NORMA",
+        ["IEC-60255", "IEEE-ANSI", "Proteção de Máquinas Térmicas", "Personalizada"],
+        key="norma_tipo_neutro",
+    )
+
+    with col2_neutro:
+        partida_51_neutro = st.number_input(
+        "PARTIDA 51 - fase (A PRIM.)", min_value=0.0, step=0.5, key="partida_51_neutro", placeholder="Digite um valor de corrente (A)"
+    )
+
+    with col3_neutro:
+        if norma_tipo_neutro == "IEC-60255":
+            curva_tipo_neutro = st.selectbox(
+            "CURVA",
+            ["Normalmente inversa", "Muito inversa", "Extremamente inversa", "Inversa longa", "Inversa curta"],
+            key="curva_tipo_iec_neutro"
+        )
+    
+        elif norma_tipo_neutro == "IEEE-ANSI":
+            curva_tipo_neutro = st.selectbox(
+            "CURVA",
+            ["Moderadamente inversa", "Muito inversa", "Extremamente inversa"],
+            key="curva_tipo_ieee_neutro"
+        )
+        
+        elif norma_tipo_neutro == "Proteção de Máquinas Térmicas":
+            curva_tipo_neutro = st.selectbox(
+            "CURVA",
+            ["I x T", "I² x T"],
+            key="curva_tipo_outras_neutro"
+        )
+
+        else:
+            curva_tipo_neutro = st.selectbox(
+            "CURVA", ["Personalizada"], key="curva_personalizada_neutro")
+    with col4_neutro:
+        dial_tms_neutro = st.number_input(
+        "DIAL ($T_{ms}$)", min_value=0.01, max_value=10.0, step=0.01, key="dial_tms_neutro"
+    )
+
+    with col5_neutro:
+        opcoes_rtc_neutro = ["100 / 5", "150 / 5", "200 / 5", "300 / 5", "400 / 5", "600 / 5", "800 / 5", "Personalizado (Digitar)"]
+        rtc_selecionado_neutro = st.selectbox("RTC", opcoes_rtc, key="rtc_selectbox_neutro")
+    
+    if rtc_selecionado_neutro == "Personalizado (Digitar)":
+        rtc_str_neutro = st.text_input("Digite o RTC:", key="rtc_str_input_neutro")
+    else:
+        rtc_str_neutro = rtc_selecionado_neutro
+
+    with col6_neutro:
+        tolerancia_neutro = st.number_input(
+        "TOLERÂNCIA (±%)", min_value=0.1, max_value=20.0, step=0.5, key="tolerancia_neutro"
+    )
+
+    if norma_tipo_neutro == "Personalizada":
+        st.markdown("---") # Linha sutil para separar visualmente
+        sub_col1, sub_col2, sub_col3 = st.columns(3)
+        with sub_col1:
+            k_user_str_neutro = st.number_input("Digite a Constante K (IEEE):", min_value=0.01, max_value=100.0, value=0.0515, step=0.01, key="k_input_user_ieee_neutro")
+        with sub_col2:
+            alpha_user_str_neutro = st.number_input("Digite a Constante α (IEEE):", min_value=0.02, max_value=3.0, value=2.0, step=0.1, key="alpha_input_user_ieee_neutro")
+        with sub_col3:
+            L_user_str_neutro = st.number_input("Digite a Constante L (IEEE):", min_value=0.0, max_value=1.0, value=0.1217, step=0.1, key="l_input_user_ieee_neutro")
+
+    # ==========================================
+    # 6. CONFIGURAÇÃO DA UNIDADE INSTANTÂNEA NEUTRO (50N)
+    # ==========================================
+    st.markdown("""
+        <div class="secao-neutro">
+            <span class="icone-neutro">⚙</span>
+            <span class="titulo-neutro">Configuração da Unidade Instantânea (50N)</span>
+            <span class="tag-neutro">Curva de neutro</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    c_inst1_neutro, c_inst2_neutro, c_inst3_neutro = st.columns(3)
+
+    with c_inst1_neutro:
+        criterio_50_neutro = st.selectbox(
+        "CRITÉRIO DE AJUSTE (50N)",
+        ["Manual Direto"],
+        key="criterio_50_neutro"
+    )
+
+    with c_inst2_neutro:
+        partida_50_neutro = st.number_input("PARTIDA 50N MANUAL (A PRIM.)", min_value=0.0, step=5.0, key="partida_50_manual_neutro", placeholder="Digite um valor de corrente (A)")
+
+    with c_inst3_neutro:
+        tempo_instantaneo = st.number_input("TEMPO DE ATUAÇÃO 50N (s)", min_value=0.0, max_value=1.0, value=0.0, step=0.005, format="%.3f", key="tempo_instantaneo_neutro", placeholder="Digite um valor de tempo (s)")
+
+    # Parâmetros ativos atuais da tela
+    n_tipo_Ativo_neutro, c_tipo_Ativo_neutro, p_51_Ativo_neutro, tms_Ativo_neutro, tol_Ativo_neutro, t_inst_Ativo_neutro, crit_50_Ativo_neutro, p_50_man_Ativo_neutro, rtc_str_Ativo_neutro, rel_tc_Ativo_neutro = get_parametros_sessao_neutro()
+    p_50_Ativo_neutro = p_50_man_Ativo_neutro
+
+    st.markdown("""
+        <div class="secao-neutro">
+            <span class="icone-neutro">⚙</span>
+            <span class="titulo-neutro">Inserir medições de Neutro (50N/51N)</span>
+            <span class="tag-neutro">Curva de Neutro</span>
+        </div>
+        """, unsafe_allow_html=True)    
+
+    with st.form("form_add_ponto_neutro", clear_on_submit=True):
+        col_n1, col_n2, col_n3, col_n4 = st.columns([1, 2, 2, 1])
+        with col_n1:
+            novo_id_neutro = st.text_input("ID", value=f"I{len(st.session_state.pontos_ensaio_neutro)+1}")
+        with col_n2:
+            novo_iprim_neutro = st.number_input("Corrente Primária Neutro (A)", min_value=0.0, value=0.0, step=0.5, placeholder="Digite um valor de corrente (A)")
+        with col_n3:
+            novo_treal_neutro = st.number_input("Tempo Medido (s)", min_value=0.0, value=0.0, step=0.001, format="%.3f", placeholder="Digite um valor de tempo (s)")
+        with col_n4:
+            st.markdown("<br>", unsafe_allow_html=True)
+            btnAdd_neutro = st.form_submit_button("Adicionar Ponto")
+            if btnAdd_neutro:
+                ids_existentes_neutro = [p_neutro["id"] for p_neutro in st.session_state.pontos_ensaio_neutro]
+                if novo_id_neutro in ids_existentes_neutro:
+                    st.warning(f"⚠️ O ID '{novo_id_neutro}' já existe na tabela na tabela dos dados de neutro. Por favor, utilize um ID diferente.")
+                elif not re.match(r"^I\d+$", novo_id_neutro):
+                    st.warning("⚠️ O ID deve seguir obrigatoriamente o formato da letra 'I' seguida de número (Ex: I1, I2, ..., In).")
+                else:
+                    if novo_iprim_neutro > 0:
+                        st.session_state.pontos_ensaio_neutro.append({
+                            "id": novo_id_neutro,
+                            "iprim": novo_iprim_neutro,
+                            "treal": novo_treal_neutro,
+                        })
+                        st.rerun()
+                    elif novo_iprim_neutro < 0:
+                        st.warning("⚠️ Insira o módulo da Corrente Primária para o neutro.") 
+                    else:
+                        st.warning("⚠️ Insira um valor de Corrente Primária de neutro maior que zero.")
+
+    st.markdown("""
+        <div class="secao-neutro">
+            <span class="icone-neutro">⚙</span>
+            <span class="titulo-neutro">Relatório de Resultados e Erro Relativo</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown(
+        '<p style="color: #FFFFFF;">Abaixo estão listados todos os pontos ativos do ensaio com cálculo dinâmico imediato. (🟥 - Teste Reprovado e 🟩 - Teste Aprovado)</p>',
+        unsafe_allow_html=True,
+    )
+
+    hn1, hn2, hn3, hn4, hn5, hn6, hn7 = st.columns([1, 2, 2, 2, 2, 2, 1])
+    with hn1: st.markdown("<div class='titulo-tabela'>n°</div>", unsafe_allow_html=True)
+    with hn2: st.markdown("<div class='titulo-tabela'>Corrente Primária (A)</div>", unsafe_allow_html=True)
+    with hn3: st.markdown("<div class='titulo-tabela'>Corrente Secundária (A)</div>", unsafe_allow_html=True)
+    with hn4: st.markdown("<div class='titulo-tabela'>Tempo Teórico</div>", unsafe_allow_html=True)
+    with hn5: st.markdown("<div class='titulo-tabela'>Tempo Real (s)</div>", unsafe_allow_html=True)
+    with hn6: st.markdown("<div class='titulo-tabela'>Erro (%)</div>", unsafe_allow_html=True)
+    with hn7: st.markdown("<div class='titulo-tabela'>Apagar</div>", unsafe_allow_html=True)
+    linhas_processadas_neutro = []
+    indices_para_remover_neutro = []
+
+    for idx_neutro, p_neutro in enumerate(st.session_state.pontos_ensaio_neutro):
+        col_neutro1, col_neutro2, col_neutro3, col_neutro4, col_neutro5, col_neutro6, col_neutro7 = st.columns([1, 2, 2, 2, 2, 2, 1])
+
+        with col_neutro1:
+            #st.text(p["id"])
+            st.markdown(f"<div class='titulo-tabela'>{p_neutro['id']}</div>", unsafe_allow_html=True)
+        with col_neutro2:
+            iprim_val_neutro = st.number_input(
+                f"Primária {idx_neutro}",
+                min_value=0.0,
+                value=float(p_neutro["iprim"]),
+                step=1.0,
+                key=f"neutro_iprim_{idx_neutro}",
+                label_visibility="collapsed",
+            )
+        with col_neutro3:
+            i_sec_neutro = iprim_val_neutro / rel_tc_Ativo_neutro
+            st.markdown(f'<div class="titulo-tabela">{i_sec_neutro:.2f} A</div>', unsafe_allow_html=True)
+        with col_neutro4:
+            t_teorico_neutro = calcular_teorico_geral_neutro(iprim_val_neutro, n_tipo_Ativo_neutro, c_tipo_Ativo_neutro, p_51_Ativo_neutro, tms_Ativo_neutro, p_50_Ativo_neutro, t_inst_Ativo_neutro)
+            if pd.isna(t_teorico_neutro) or t_teorico_neutro == 0:
+                t_teorico_str_neutro = "Infinito"
+            else:
+                t_teorico_str_neutro = f"{t_teorico_neutro:.3f} s"
+            #st.text(t_teorico_str)
+            st.markdown(f'<div class="titulo-tabela">{t_teorico_str_neutro}</div>', unsafe_allow_html=True)
+
+        with col_neutro5:
+            treal_val_neutro = st.number_input(
+                f"Real {idx_neutro}",
+                min_value=0.0,
+                value=float(p_neutro["treal"]),
+                step=0.001,
+                format="%.3f",
+                key=f"treal_neutro_{idx_neutro}",
+                label_visibility="collapsed",
+            )
+
+        if pd.isna(t_teorico_neutro) or t_teorico_neutro == 0:
+            erro_neutro = 0.0
+            status_neutro = "Fora da curva"
+            cor_fundo_neutro = "#f8f9fa"
+        else:
+            erro_neutro = ((treal_val_neutro - t_teorico_neutro) / t_teorico_neutro) * 100
+            status_neutro = "Aprovado" if abs(erro_neutro) <= tol_Ativo_neutro else "Reprovado"
+            cor_fundo_neutro = "#22de8a" if abs(erro_neutro) <= tol_Ativo_neutro else "#eb2a3a"
+
+        with col_neutro6:
+            st.markdown(
+                f"<div style='background-color: {cor_fundo_neutro}; padding: 5px; border-radius: 4px; text-align: center; font-weight: bold; color: #000;' title='Status: {status_neutro}'>{erro_neutro:+.1f}%</div>",
+                unsafe_allow_html=True,
+            )
+
+        with col_neutro7:
+            if st.button("🗑️", key=f"del_neutro_{idx_neutro}"):
+                indices_para_remover_neutro.append(idx_neutro)
+
+        st.session_state.pontos_ensaio_neutro[idx_neutro]["iprim"] = iprim_val_neutro
+        st.session_state.pontos_ensaio_neutro[idx_neutro]["treal"] = treal_val_neutro
+
+        linhas_processadas_neutro.append({
+            "Ponto": p_neutro["id"],
+            "Corrente Primária (A)": iprim_val_neutro,
+            "Tempo Teórico Num": t_teorico_neutro,
+            "Tempo Real (s)": treal_val_neutro,
+        })
+
+    if indices_para_remover_neutro:
+        for i in sorted(indices_para_remover_neutro, reverse=True):
+            st.session_state.pontos_ensaio_neutro.pop(i)
+        st.rerun()
+
+    df_res_neutro = pd.DataFrame(linhas_processadas_neutro)
+    st.markdown("---")
 
 # ==========================================
 # 10. CONSTRUÇÃO DO GRÁFICO PLOTLY NA TELA
@@ -2332,23 +3120,60 @@ with col_graf:
     </style>
     """, unsafe_allow_html=True)
 
-  col_chk1, col_chk2 = st.columns(2)
+  col_chk1, col_chk2, col_chk3, col_chk4  = st.columns(4)
   with col_chk1:
-    mostrar_legenda_teo = st.checkbox("Exibir legenda nos pontos Teóricos", value=True)
+    mostrar_legenda_teo = st.checkbox("Pontos Teóricos (50/51)", value=True)
   with col_chk2:
-    mostrar_legenda_real = st.checkbox("Exibir legenda nos pontos Reais", value=True)
+    mostrar_legenda_real = st.checkbox("Pontos Reais (50/51)", value=True)
+  with col_chk3:
+    mostrar_legenda_teo_neutro = st.checkbox("Pontos Teóricos (50N/51N)", value=True)    
+  with col_chk4:
+    mostrar_legenda_real_neutro = st.checkbox("Pontos Reais (50N/51N)", value=True)
+
+# Inicializa as variáveis vazias para garantir escopo seguro
+# Puxa tudo da Fase
+    (
+        n_tipo_Ativo, c_tipo_Ativo, p_51_Ativo,
+        tms_Ativo, tol_Ativo, t_inst_Ativo,
+        crit_50_Ativo, p_50_man_Ativo, rtc_str_Ativo, rel_tc_Ativo,
+    ) = get_parametros_sessao() 
+
+    # Puxa tudo do Neutro
+    (
+        n_tipo_Ativo_neutro, c_tipo_Ativo_neutro, p_51_Ativo_neutro,
+        tms_Ativo_neutro, tol_Ativo_neutro, t_inst_Ativo_neutro,
+        crit_50_Ativo_neutro, p_50_man_Ativo_neutro, rtc_str_Ativo_neutro, rel_tc_Ativo_neutro,
+    ) = get_parametros_sessao_neutro() 
+
+    p_50_Ativo_neutro = p_50_man_Ativo_neutro
 
   fig = go.Figure()
+  val_51 = float(p_51_Ativo or 0)
+  val_50 = float(p_50_Ativo or 0)
+  val_51_neutro = float(p_51_Ativo_neutro or 0)
+  val_50_neutro = float(p_50_Ativo_neutro or 0)
 
-  p51_plot = max(p_51_Ativo, 0.001)
-  p50_plot = max(p_50_Ativo, 0.001)
-  #limite_inf_plot = p51_plot * 1.1 if n_tipo_Ativo == "IEEE-ANSI" else p51_plot * 1.01
-  limite_inf_plot = p51_plot * 1.001
+  p51_plot = max(val_51, 0.001)
+  p50_plot = max(val_50, 0.001)
+  p51_plot_neutro = max(val_51_neutro, 0.001)
+  p50_plot_neutro = max(val_50_neutro, 0.001)
+
+  limite_inf_plot = p51_plot * 1.001 
+  limite_inf_plot_neutro = p51_plot_neutro * 1.001
+  
+  #FASE A SER PLOTADA
   if p50_plot > limite_inf_plot:
     i_vals_51 = np.logspace(np.log10(limite_inf_plot), np.log10(p50_plot), 100)
   else:
     i_vals_51 = [limite_inf_plot]
   
+  #NEUTRO A SER PLOTADO
+  if p50_plot_neutro > limite_inf_plot_neutro:
+    i_vals_51_neutro = np.logspace(np.log10(limite_inf_plot_neutro), np.log10(p50_plot_neutro), 100)
+  else:
+    i_vals_51_neutro = [limite_inf_plot_neutro]
+  
+  #PLOTAGEM DO GRÁFICO DE FASE
   if n_tipo_Ativo == "IEC-60255":
     p = get_parametros_norma_dict(n_tipo_Ativo, c_tipo_Ativo)
     t_vals_51 = [tms_Ativo * (p["K"] / (((iv / p51_plot) ** p["alpha"]) - 1)) for iv in i_vals_51]
@@ -2365,49 +3190,144 @@ with col_graf:
     else:
       t_vals_51 = [(540 / ((iv / p51_plot)**2)) * tms_Ativo for iv in i_vals_51]
 
-  fig.add_trace(go.Scatter(x=i_vals_51, y=t_vals_51, mode="lines", name=f"ANSI (51) - Curva {c_tipo_Ativo} ({n_tipo_Ativo})", line=dict(color="#ffb90f", width=3)))
+  #PLOTAGEM DO GRÁFICO DE NEUTRO
+  if n_tipo_Ativo_neutro == "IEC-60255":
+    p_neutro = get_parametros_norma_dict_neutro(n_tipo_Ativo_neutro, c_tipo_Ativo_neutro)
+    t_vals_51_neutro = [tms_Ativo_neutro * (p_neutro["K"] / (((iv_neutro / p51_plot_neutro) ** p_neutro["alpha"]) - 1)) for iv_neutro in i_vals_51_neutro]
+  elif n_tipo_Ativo_neutro in ["IEEE-ANSI","Personalizada"]:
+    p_neutro = get_parametros_norma_dict_neutro(n_tipo_Ativo_neutro, c_tipo_Ativo_neutro)
+    t_vals_51_neutro = []
+    for iv_neutro in i_vals_51_neutro:
+        m_neutro = iv_neutro / p51_plot_neutro
+        if m_neutro > 20.0: m_neutro = 20.0
+        t_vals_51_neutro.append(tms_Ativo_neutro * ((p_neutro["K"] / ((m_neutro ** p_neutro["alpha"]) - 1)) + p_neutro["L"]))
+  else:
+    if c_tipo_Ativo_neutro == "I x T":
+        t_vals_51_neutro = [(60 / (iv_neutro / p51_plot_neutro)) * tms_Ativo_neutro for iv_neutro in i_vals_51_neutro]
+    else:
+        t_vals_51_neutro = [(540 / ((iv_neutro / p51_plot_neutro)**2)) * tms_Ativo_neutro for iv_neutro in i_vals_51_neutro]
 
+  
+
+  if val_51 > 0:
+    fig.add_trace(go.Scatter(x=i_vals_51, y=t_vals_51, mode="lines", name=f"ANSI (51) - Curva {c_tipo_Ativo} ({n_tipo_Ativo})", line=dict(color="#ffb000", width=3)))
+    
   i_vals_50 = np.logspace(np.log10(p50_plot), np.log10(max(p50_plot * 2.5, 500.0)), 100)
   t_vals_50 = [t_inst_Ativo] * len(i_vals_50)
+    
+  if val_50 > 0:
+    fig.add_trace(go.Scatter(x=i_vals_50, y=t_vals_50, mode="lines", name="ANSI (50) - Unidade Instantânea Fase", line=dict(color="#e53935", width=3)))
+    fig.add_trace(go.Scatter(x=[p50_plot, p50_plot], y=[t_vals_51[-1] if len(t_vals_51) > 0 else t_inst_Ativo, t_inst_Ativo], mode="lines", showlegend=False, line=dict(color="#e53935", width=3)))
 
-  fig.add_trace(go.Scatter(x=i_vals_50, y=t_vals_50, mode="lines", name="ANSI (50) - Unidade Instantânea", line=dict(color="#ff0f0f", width=3)))
-  fig.add_trace(go.Scatter(x=[p50_plot, p50_plot], y=[t_vals_51[-1] if len(t_vals_51) > 0 else t_inst_Ativo, t_inst_Ativo], mode="lines", showlegend=False, line=dict(color="#ff0f0f", width=3)))
+  if val_51_neutro > 0: 
+    fig.add_trace(go.Scatter(x=i_vals_51_neutro, y=t_vals_51_neutro, mode="lines", name=f"ANSI (51N) - Curva {c_tipo_Ativo_neutro} ({n_tipo_Ativo_neutro})", line=dict(color="#00897b", width=3)))
+
+  i_vals_50_neutro = np.logspace(np.log10(p50_plot_neutro), np.log10(max(p50_plot_neutro * 2.5, 500.0)), 100)
+  t_vals_50_neutro = [t_inst_Ativo_neutro] * len(i_vals_50_neutro)
+
+  if p_50_Ativo_neutro > 0:
+    fig.add_trace(go.Scatter(x=i_vals_50_neutro, y=t_vals_50_neutro, mode="lines", name="ANSI (50N) - Unidade Instantânea Neutro", line=dict(color="#0f23ff", width=3)))
+    fig.add_trace(go.Scatter(x=[p50_plot_neutro, p50_plot_neutro], y=[t_vals_51_neutro[-1] if len(t_vals_51_neutro) > 0 else t_inst_Ativo_neutro, t_inst_Ativo_neutro], mode="lines", showlegend=False, line=dict(color="#0f23ff", width=3)))
+
+  #paleta_cores = ["#0d6efd", "#20c997", "#fd7e14", "#6f42c1", "#e83e8c", "#28a745", "#17a2b8"]
+  #paleta_cores_neutro = ["#0d6efd", "#20c997", "#fd7e14", "#6f42c1", "#e83e8c", "#28a745", "#17a2b8"]
+
+  paleta_cores = [
+    "#FB8C00",
+    #"#E53935", # 1. Vermelho Intenso
+    #"#1E88E5", # 2. Azul Intenso
+    #"#43A047", # 3. Verde Intenso
+    #"#FB8C00", # 4. Laranja Intenso
+    #"#8E24AA", # 5. Roxo Intenso
+    #"#D81B60", # 6. Rosa Intenso
+    #"#00ACC1"  # 7. Ciano Intenso
+]
+  paleta_cores_neutro = [
+    "#00897B",
+    #"#1E88E5", #2. Azul intenso
+    #"#EF9A9A", # 1. Vermelho Pastel
+    #"#90CAF9", # 2. Azul Pastel
+    #"#A5D6A7", # 3. Verde Pastel
+    #"#FFCC80", # 4. Laranja Pastel
+    #"#CE93D8", # 5. Roxo Pastel
+    #"#F48FB1", # 6. Rosa Pastel
+    #"#80DEEA"  # 7. Ciano Pastel
+]
 
   if not df_res.empty:
-    paleta_cores = ["#0d6efd", "#20c997", "#fd7e14", "#6f42c1", "#e83e8c", "#28a745", "#17a2b8"]
     p_x_teo, p_y_teo, p_ids_teo, cores_teo = [], [], [], []
     
     for i, row in df_res.iterrows():
       if not pd.isna(row["Tempo Teórico Num"]):
         p_x_teo.append(row["Corrente Primária (A)"])
         p_y_teo.append(row["Tempo Teórico Num"])
-        p_ids_teo.append(row["Ponto"] + " (Teórico)")
+        p_ids_teo.append(row["Ponto"] + "(T)")
         cores_teo.append(paleta_cores[i % len(paleta_cores)])
 
     if p_x_teo:
       modo_teo = "markers+text" if mostrar_legenda_teo else "markers"
-      fig.add_trace(go.Scatter(x=p_x_teo, y=p_y_teo, mode=modo_teo, text=p_ids_teo, textposition="top right", marker=dict(size=12, symbol="triangle-up", color=cores_teo), name="Pontos Teóricos"))
+      fig.add_trace(go.Scatter(x=p_x_teo, y=p_y_teo, mode=modo_teo, text=p_ids_teo, textposition="top right", marker=dict(size=12, symbol="triangle-up", color=cores_teo), name="Pontos Teóricos (Fase) - I(T)"))
 
     p_x_real = df_res["Corrente Primária (A)"].tolist()
     p_y_real = df_res["Tempo Real (s)"].tolist()
-    p_ids_real = [p + " (Real)" for p in df_res["Ponto"].tolist()]
+    p_ids_real = [p + "(R)" for p in df_res["Ponto"].tolist()]
     cores_real = [paleta_cores[i % len(paleta_cores)] for i in range(len(df_res))]
 
     modo_real = "markers+text" if mostrar_legenda_real else "markers"
-    fig.add_trace(go.Scatter(x=p_x_real, y=p_y_real, mode=modo_real, text=p_ids_real, textposition="bottom right", marker=dict(size=12, symbol="circle", color=cores_real), name="Pontos Reais"))
+    fig.add_trace(go.Scatter(x=p_x_real, y=p_y_real, mode=modo_real, text=p_ids_real, textposition="bottom right", marker=dict(size=12, symbol="circle", color=cores_real), name=" Pontos Reais (Fase) - I(R)"))
 
-  fig.update_layout(title=dict(text="Curva de Coordenação e Seletividade — Funções ANSI 50/51", x=0.5, xanchor="center"), xaxis_title="Corrente primária (A)", yaxis_title="Tempo (s)", margin=dict(l=20, r=20, t=60, b=20), height=500, hovermode="closest")
-  fig.update_xaxes(type="log", range=[-1, 4], showline=True, linewidth=1, linecolor="gray", mirror=True, showgrid=True, minor=dict(showgrid=True))
-  fig.update_yaxes(type="log", range=[-2, 2], showline=True, linewidth=1, linecolor="gray", mirror=True, showgrid=True, minor=dict(showgrid=True))
+    fig.update_layout(title=dict(text="Curva de Coordenação e Seletividade — Funções ANSI 50/51 e 50N/51N", x=0.5, xanchor="center"), xaxis_title="Corrente primária (A)", yaxis_title="Tempo (s)", margin=dict(l=20, r=20, t=60, b=20), height=500, hovermode="closest")
+    fig.update_xaxes(type="log", range=[-1, 4], showline=True, linewidth=1, linecolor="gray", mirror=True, showgrid=True, minor=dict(showgrid=True))
+    fig.update_yaxes(type="log", range=[-2, 2], showline=True, linewidth=1, linecolor="gray", mirror=True, showgrid=True, minor=dict(showgrid=True))
+
+  if not df_res_neutro.empty:
+    p_x_teo_neutro, p_y_teo_neutro, p_ids_teo_neutro, cores_teo_neutro = ([], [], [], [],)
+     
+    for i_neutro, row_neutro in df_res_neutro.iterrows():
+        if not pd.isna(row_neutro["Tempo Teórico Num"]):
+            p_x_teo_neutro.append(row_neutro["Corrente Primária (A)"])
+            p_y_teo_neutro.append(row_neutro["Tempo Teórico Num"])
+            p_ids_teo_neutro.append(row_neutro["Ponto"] + "n(T)")
+            cores_teo_neutro.append(paleta_cores_neutro[i_neutro % len(paleta_cores_neutro)])
+
+    if p_x_teo_neutro:
+        modo_teo_neutro = "markers+text" if mostrar_legenda_teo_neutro else "markers"
+        fig.add_trace(go.Scatter(x=p_x_teo_neutro, y=p_y_teo_neutro, mode=modo_teo_neutro, text=p_ids_teo_neutro, textposition="top right", marker=dict(size=12, symbol="triangle-up", color=cores_teo_neutro), name="Pontos Teóricos (Neutro) - In(T)"))
+    
+    p_x_real_neutro = df_res_neutro["Corrente Primária (A)"].tolist()
+    p_y_real_neutro = df_res_neutro["Tempo Real (s)"].tolist()
+    p_ids_real_neutro = [p_neutro + "n(R)" for p_neutro in df_res_neutro["Ponto"].tolist()]
+    
+    cores_real_neutro = [paleta_cores_neutro[i_neutro % len(paleta_cores_neutro)] for i_neutro in range(len(df_res_neutro))]
+    modo_real_neutro = "markers+text" if mostrar_legenda_real_neutro else "markers"
+    
+    fig.add_trace(go.Scatter(x=p_x_real_neutro, y=p_y_real_neutro, mode=modo_real_neutro, text=p_ids_real_neutro, textposition="bottom right", marker=dict(size=12, symbol="circle", color=cores_real_neutro), name="Pontos Reais (Neutro) - In(R)"))
+    
+    fig.update_layout(title=dict(text="Curva de Coordenação e Seletividade — Funções ANSI 50/51 e 50N/51N", x=0.5, xanchor="center"), xaxis_title="Corrente primária (A)", yaxis_title="Tempo (s)", margin=dict(l=20, r=20, t=60, b=20), height=500, hovermode="closest")
+    fig.update_xaxes(type="log", range=[-1, 4], showline=True, linewidth=1, linecolor="gray", mirror=True, showgrid=True, minor=dict(showgrid=True))
+    fig.update_yaxes(type="log", range=[-2, 2], showline=True, linewidth=1, linecolor="gray", mirror=True, showgrid=True, minor=dict(showgrid=True))
   
-  st.plotly_chart(fig, width='stretch')
-   
+    st.plotly_chart(fig, width='stretch')
+    #st.plotly_chart(fig, use_container_width=True)
+
+col1, col2 = st.columns([1, 2])
+with col1:  
   st.markdown(f"""
-<div style="line-height: 1.3; margin-top: 8px; color: #ffffff;">
+<div style="line-height: 1.3; margin-top: -360px; color: #ffffff;">
     <div><strong>Norma de referência:</strong> {n_tipo_Ativo}</div>
     <div><strong>Curva característica:</strong> {curva_tipo}</div>
     <div><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms:.2f}</div>
     <div><strong>Relação RTC:</strong> {rtc_str_Ativo} ({rel_tc_Ativo:.0f}:1)</div> 
+</div>
+""", unsafe_allow_html=True)
+
+with col2:
+  st.markdown(f"""
+<div style="line-height: 1.3; margin-top: -360px; color: #ffffff;">
+    <div><strong>Norma de referência:</strong> {n_tipo_Ativo_neutro}</div>
+    <div><strong>Curva característica:</strong> {curva_tipo_neutro}</div>
+    <div><strong>Multiplicador de tempo (<i>T</i><sub>ms</sub>):</strong> {dial_tms_neutro:.2f}</div>
+    <div><strong>Relação RTC:</strong> {rtc_str_Ativo_neutro} ({rel_tc_Ativo_neutro:.0f}:1)</div> 
 </div>
 """, unsafe_allow_html=True)
 
